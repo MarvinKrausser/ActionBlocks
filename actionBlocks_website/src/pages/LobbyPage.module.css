@@ -1,0 +1,133 @@
+.page {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.codePanel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.code {
+  font-size: clamp(28px, 8vw, 56px);
+  letter-spacing: 10px;
+  color: var(--color-accent);
+  text-shadow: 4px 4px 0 var(--color-dim);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.players {
+  margin: 0 0 20px;
+  padding-left: 28px;
+}
+
+.players li {
+  padding: 4px 0;
+}
+
+.players li span + span {
+  margin-left: 8px;
+}
+
+.me {
+  color: var(--color-target);
+}
+
+.badge {
+  padding: 1px 4px;
+  border: 2px solid currentColor;
+  font-size: 8px;
+}
+
+.start {
+  width: 100%;
+}
+
+.waiting,
+.hint {
+  color: var(--color-muted);
+  font-size: 10px;
+}
+
+.error {
+  color: var(--color-danger);
+  word-break: break-all;
+}
+
+.results {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.results td {
+  padding: 4px 6px;
+}
+
+.num {
+  text-align: right;
+}
+
+.winner {
+  color: var(--color-accent);
+}
+
+.controls {
+  margin: 0;
+}
+
+.controls div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 3px 0;
+  font-size: 10px;
+}
+
+.controls dt {
+  color: var(--color-accent);
+}
+
+.controls dd {
+  margin: 0;
+  text-align: right;
+}
+
+.items {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.items li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 4px 0;
+}
+
+.items img {
+  image-rendering: pixelated;
+}
+
+.itemDescription {
+  color: var(--color-muted);
+  font-size: 8px;
+}

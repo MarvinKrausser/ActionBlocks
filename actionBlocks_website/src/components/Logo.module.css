@@ -1,0 +1,33 @@
+.logo,
+.small {
+  margin: 0;
+  font-weight: normal;
+  letter-spacing: 2px;
+  text-shadow: 4px 4px 0 var(--color-dim);
+  white-space: nowrap;
+}
+
+.logo {
+  font-size: clamp(20px, 5vw, 40px);
+}
+
+.small {
+  font-size: 14px;
+  text-shadow: 2px 2px 0 var(--color-dim);
+}
+
+.space {
+  display: inline-block;
+  width: 0.6em;
+}
+
+.image {
+  max-width: 100%;
+  height: 80px;
+  image-rendering: pixelated;
+}
+
+.imageSmall {
+  height: 28px;
+  image-rendering: pixelated;
+}

@@ -1,0 +1,46 @@
+:root {
+  --color-bg: #000000;
+  --color-fg: #ffffff;
+  --color-muted: #9a9a9a;
+  --color-dim: #3a3a3a;
+  --color-accent: #ffe23f;
+  --color-danger: #ff4256;
+  --color-ok: #4fe35f;
+  --color-target: #3fe3f2;
+  --font-pixel: 'Press Start 2P', ui-monospace, 'Courier New', monospace;
+  --border: 3px solid var(--color-fg);
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-pixel);
+  font-size: 12px;
+  line-height: 1.6;
+  image-rendering: pixelated;
+  -webkit-font-smoothing: none;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+::selection {
+  background: var(--color-fg);
+  color: var(--color-bg);
+}

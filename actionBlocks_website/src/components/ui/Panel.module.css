@@ -1,0 +1,13 @@
+.panel {
+  border: var(--border);
+  padding: 16px;
+  background: var(--color-bg);
+}
+
+.title {
+  margin: 0 0 14px;
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}

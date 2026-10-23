@@ -1,0 +1,17 @@
+.preview {
+  border: var(--border);
+  padding: 8px;
+  background: var(--color-bg);
+}
+
+.title {
+  margin-bottom: 8px;
+  font-size: 10px;
+  color: var(--color-muted);
+  text-align: center;
+}
+
+.canvas {
+  display: block;
+  image-rendering: pixelated;
+}

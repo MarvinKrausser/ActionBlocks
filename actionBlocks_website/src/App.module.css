@@ -1,0 +1,13 @@
+.status {
+  padding: 8px 16px;
+  background: var(--color-danger);
+  color: var(--color-bg);
+  text-align: center;
+  font-size: 10px;
+}
+
+.loading {
+  padding: 64px 16px;
+  text-align: center;
+  color: var(--color-muted);
+}

@@ -1,0 +1,36 @@
+# Both networks must already exist and be attached to the reverse proxy:
+#   docker network create actionBlocks_website
+#   docker network create actionBlocks_server
+#
+# Reverse proxy routing:
+#   website -> actionblocks-website:80
+#   game hub -> actionblocks-server:8080, path /hub (needs WebSocket upgrade support:
+#               "Upgrade" and "Connection" headers must be forwarded).
+# If the hub is served from a different host, set SERVER_URL accordingly and list the
+# website origin in ALLOWED_ORIGINS.
+
+services:
+  actionblocks-website:
+    build: ./actionBlocks_website
+    container_name: actionblocks-website
+    restart: unless-stopped
+    environment:
+      SERVER_URL: ${SERVER_URL:-}
+    networks:
+      - actionBlocks_website
+
+  actionblocks-server:
+    build: ./actionBlocks_server
+    container_name: actionblocks-server
+    restart: unless-stopped
+    environment:
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-}
+      HUB_PATH: /hub
+    networks:
+      - actionBlocks_server
+
+networks:
+  actionBlocks_website:
+    external: true
+  actionBlocks_server:
+    external: true

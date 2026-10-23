@@ -1,0 +1,157 @@
+.page {
+  min-height: 100vh;
+  padding: 12px 16px 24px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.lobbyCode {
+  color: var(--color-muted);
+  font-size: 10px;
+}
+
+.arena {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 32px;
+}
+
+.own {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.side {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 110px;
+}
+
+.stats {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+  border: var(--border);
+}
+
+.statLabel {
+  color: var(--color-muted);
+  font-size: 8px;
+}
+
+.statValue {
+  font-size: 12px;
+}
+
+.slotHint {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+}
+
+.slot {
+  display: inline-block;
+  min-width: 20px;
+  padding: 2px 5px;
+  border: 2px solid var(--color-fg);
+  text-align: center;
+}
+
+.slotSelected {
+  background: var(--color-target);
+  border-color: var(--color-target);
+  color: var(--color-bg);
+}
+
+.boardColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.boardRow {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.garbageMeter {
+  position: relative;
+  width: 8px;
+  border: 2px solid var(--color-dim);
+  box-sizing: content-box;
+}
+
+.garbageFill {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--color-danger);
+}
+
+.inventory {
+  align-self: flex-end;
+  border: var(--border);
+  padding: 4px;
+}
+
+.useHint {
+  padding: 4px 3px 0;
+  font-size: 8px;
+  color: var(--color-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.55);
+  line-height: 1.4;
+  text-align: center;
+  z-index: 3;
+}
+
+.countdown {
+  font-size: 64px;
+  color: var(--color-accent);
+  text-shadow: 5px 5px 0 var(--color-dim);
+}
+
+.result {
+  padding: 0 12px;
+  font-size: 20px;
+  color: var(--color-accent);
+  text-shadow: 3px 3px 0 var(--color-dim);
+}
+
+.opponents {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 18px;
+  max-width: 640px;
+}
+
+.spectator {
+  padding: 20px;
+  border: var(--border);
+  color: var(--color-muted);
+}
