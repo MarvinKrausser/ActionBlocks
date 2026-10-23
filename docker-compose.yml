@@ -6,8 +6,11 @@
 #   website -> actionblocks-website:80
 #   game hub -> actionblocks-server:8080, path /hub (needs WebSocket upgrade support:
 #               "Upgrade" and "Connection" headers must be forwarded).
-# If the hub is served from a different host, set SERVER_URL accordingly and list the
-# website origin in ALLOWED_ORIGINS.
+# Sub-paths are supported (e.g. site at https://example.com/website/, server at /server):
+#   - the website works whether or not the proxy strips its prefix;
+#   - set SERVER_URL to the hub URL the browser should use, e.g. https://example.com/server/hub;
+#   - if the proxy does NOT strip the server prefix, set PATH_BASE=/server.
+# If the hub is served from a different host, also list the website origin in ALLOWED_ORIGINS.
 
 services:
   actionblocks-website:
@@ -26,6 +29,7 @@ services:
     environment:
       ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-}
       HUB_PATH: /hub
+      PATH_BASE: ${PATH_BASE:-}
     networks:
       - actionBlocks_server
 

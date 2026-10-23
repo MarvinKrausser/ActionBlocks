@@ -37,6 +37,8 @@ docker network create actionBlocks_server
 docker compose up -d --build
 ```
 
+The website uses relative URLs. It works under a sub-path such as `/website/`, whether or not the proxy strips that prefix.
+
 The reverse proxy (attached to both networks) should route:
 
 - the site to `actionblocks-website:80`
@@ -47,6 +49,7 @@ The reverse proxy (attached to both networks) should route:
 | `SERVER_URL` | website | Hub URL as seen by the browser. Empty means `<site origin>/hub`. Written into `config.js` at container start. |
 | `ALLOWED_ORIGINS` | server | Comma-separated CORS origins. Empty allows any origin. |
 | `HUB_PATH` | server | Hub endpoint path (default `/hub`). |
+| `PATH_BASE` | server | Prefix to accept when the proxy forwards a sub-path unstripped, e.g. `/server`. |
 | `Game__*` | server | Overrides any `GameSettings` value, e.g. `Game__ItemSpawnChance=0.2`. |
 
 ## Extending

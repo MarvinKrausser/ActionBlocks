@@ -6,6 +6,8 @@ const devServer = process.env.DEV_SERVER_URL ?? 'http://localhost:5080';
 
 export default defineConfig({
   plugins: [react()],
+  // Relative URLs so the site works under any sub-path (e.g. https://example.com/website/).
+  base: './',
   build: {
     // Hashed bundles go to /static; /assets holds the exchangeable graphics from public/.
     assetsDir: 'static',

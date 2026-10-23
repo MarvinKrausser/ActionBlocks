@@ -3,6 +3,9 @@
  * (or point these paths elsewhere) to change the look without touching components.
  */
 
+/** Resolves a file in /public relative to where the site is served (works under sub-paths). */
+const asset = (path: string) => `${import.meta.env.BASE_URL}${path}`;
+
 export interface ItemVisual {
   /** Icon drawn on board cells, in inventories and item bars. */
   icon: string;
@@ -17,31 +20,31 @@ export interface ItemVisual {
 /** Keyed by the server item id (IItem.Id). Add an entry here when adding an item on the server. */
 export const itemVisuals: Record<string, ItemVisual> = {
   add_line: {
-    icon: '/assets/items/add_line.svg',
+    icon: asset('assets/items/add_line.svg'),
     name: 'Add Line',
     color: '#ff4256',
     description: 'Pushes a garbage line into the target field.',
   },
   clear_line: {
-    icon: '/assets/items/clear_line.svg',
+    icon: asset('assets/items/clear_line.svg'),
     name: 'Clear Line',
     color: '#4fe35f',
     description: 'Removes the bottom line of the target.',
   },
   nuke: {
-    icon: '/assets/items/nuke.svg',
+    icon: asset('assets/items/nuke.svg'),
     name: 'Wipe Out',
     color: '#ffe23f',
     description: 'Clears every placed block of the target.',
   },
   swap: {
-    icon: '/assets/items/swap.svg',
+    icon: asset('assets/items/swap.svg'),
     name: 'Switch',
     color: '#3fe3f2',
     description: 'Trades your whole field with the target.',
   },
   blind: {
-    icon: '/assets/items/blind.svg',
+    icon: asset('assets/items/blind.svg'),
     name: 'Blackout',
     color: '#c452ff',
     description: 'Hides placed blocks and the drop shadow for 4 seconds.',
@@ -49,7 +52,7 @@ export const itemVisuals: Record<string, ItemVisual> = {
 };
 
 export const unknownItem: ItemVisual = {
-  icon: '/assets/items/unknown.svg',
+  icon: asset('assets/items/unknown.svg'),
   name: 'Item',
   color: '#ffffff',
   description: '',
@@ -58,7 +61,7 @@ export const unknownItem: ItemVisual = {
 export const uiAssets = {
   /** Optional logo image. When null the text logo is rendered. */
   logo: null as string | null,
-  favicon: '/assets/favicon.svg',
+  favicon: asset('assets/favicon.svg'),
 };
 
 export function itemVisual(id: string): ItemVisual {

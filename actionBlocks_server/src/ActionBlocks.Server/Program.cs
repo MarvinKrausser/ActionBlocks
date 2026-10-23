@@ -10,6 +10,9 @@ var builder = WebApplication.CreateBuilder(args);
 var allowedOrigins = (builder.Configuration["ALLOWED_ORIGINS"] ?? "")
     .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 var hubPath = builder.Configuration["HUB_PATH"] ?? "/hub";
+// Optional prefix when the reverse proxy forwards a sub-path without stripping it, e.g. "/server".
+// Requests without the prefix keep working.
+var pathBase = builder.Configuration["PATH_BASE"] ?? "";
 
 builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
 {
@@ -34,6 +37,11 @@ builder.Services.AddSingleton<LobbyManager>();
 builder.Services.AddHostedService<MatchRunner>();
 
 var app = builder.Build();
+
+if (!string.IsNullOrWhiteSpace(pathBase))
+{
+    app.UsePathBase(pathBase);
+}
 
 app.UseCors();
 app.MapGet("/health", () => Results.Ok(new { status = "ok" }));
