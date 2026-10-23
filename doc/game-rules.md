@@ -141,7 +141,7 @@ A player is eliminated when any of these happens:
 | `clear_line` | Clear Line | Removes the bottom row of the target. Items in it are lost. | `ClearBottomLineItem` |
 | `nuke` | Wipe Out | Removes **all** locked blocks of the target. The active piece is unaffected. | `ClearBoardItem` |
 | `swap` | Switch | The user and the target exchange all locked blocks. Active pieces, hold, queues, inventories and pending garbage stay with their owners. If an active piece now overlaps, it is pushed up. Does nothing when used on yourself. | `SwapBoardItem` |
-| `blind` | Blackout | For 4 seconds, the target cannot see their locked blocks or their ghost piece. Only the falling piece stays visible. Re-applying extends the effect to *now + 4 s*. | `InvisibilityItem` |
+| `blind` | Blackout | For 4 seconds, the target cannot see their locked blocks or their ghost piece. Only the falling piece stays visible. Durations stack: each further Blackout adds 4 s to the time that is left. | `InvisibilityItem` |
 
 Every item can also be used on yourself: target `1`. *Wipe Out* and *Clear Line* are useful defensively.
 

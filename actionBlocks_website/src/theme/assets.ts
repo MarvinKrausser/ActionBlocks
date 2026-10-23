@@ -47,7 +47,7 @@ export const itemVisuals: Record<string, ItemVisual> = {
     icon: asset('assets/items/blind.svg'),
     name: 'Blackout',
     color: '#c452ff',
-    description: 'Hides placed blocks and the drop shadow for 4 seconds.',
+    description: 'Hides placed blocks and the drop shadow for 4 seconds. Stacks.',
   },
 };
 

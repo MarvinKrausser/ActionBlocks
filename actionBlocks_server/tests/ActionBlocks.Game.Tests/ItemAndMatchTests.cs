@@ -91,6 +91,36 @@ public class ItemTests
     }
 
     [Fact]
+    public void Blackout_durations_stack()
+    {
+        var target = CreatePlayer("b");
+        target.Start();
+
+        new InvisibilityItem().Apply(Context(target, target, now: 10));
+        new InvisibilityItem().Apply(Context(target, target, now: 12));
+
+        target.Update(0.01, 17.9);
+        Assert.True(target.IsInvisible);
+        target.Update(0.01, 18.1);
+        Assert.False(target.IsInvisible);
+    }
+
+    [Fact]
+    public void Blackout_after_expiry_starts_fresh()
+    {
+        var target = CreatePlayer("b");
+        target.Start();
+
+        new InvisibilityItem().Apply(Context(target, target, now: 10));
+        new InvisibilityItem().Apply(Context(target, target, now: 20));
+
+        target.Update(0.01, 23.9);
+        Assert.True(target.IsInvisible);
+        target.Update(0.01, 24.1);
+        Assert.False(target.IsInvisible);
+    }
+
+    [Fact]
     public void Registry_contains_five_unique_items()
     {
         Assert.Equal(5, ItemRegistry.Default.All.Select(i => i.Id).Distinct().Count());

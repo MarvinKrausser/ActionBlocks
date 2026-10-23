@@ -46,6 +46,7 @@ public sealed class InvisibilityItem : IItem
     public string Id => "blind";
     public string DisplayName => "Blackout";
 
+    // Stacks: a second Blackout adds its full duration to whatever is left.
     public void Apply(ItemContext context) =>
-        context.Target.InvisibleUntil = Math.Max(context.Target.InvisibleUntil, context.Now + DurationSeconds);
+        context.Target.InvisibleUntil = Math.Max(context.Target.InvisibleUntil, context.Now) + DurationSeconds;
 }
