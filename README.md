@@ -2,6 +2,8 @@
 
 Online player-vs-player falling-block game with items.
 
+**Developer documentation:** see [`doc/`](doc/README.md) for architecture, game rules, protocol, frontend, deployment and how-to guides.
+
 | Component | Path | Tech |
 |---|---|---|
 | Game server (logic, lobbies, players) | `actionBlocks_server/` | ASP.NET Core 10, SignalR |
