@@ -159,5 +159,9 @@ Bindings use physical key positions (`KeyboardEvent.code`), so they work on any 
 | Hold | C, Shift |
 | Select item target | 1–9 (1 = yourself) |
 | Use item | F |
+| All sound on / off | M |
+| Background music on / off (effects stay on) | B |
+| Volume and mute for effects and music | Speaker button, upper right corner |
+| Next music track | N |
 
 Holding left/right repeats the move after 167 ms, then every 33 ms (DAS/ARR). When both directions are held, the most recently pressed one wins.

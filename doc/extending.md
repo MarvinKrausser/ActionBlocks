@@ -10,6 +10,7 @@ Step-by-step guides for the most common changes.
 - [Add a new match event](#add-a-new-match-event)
 - [Change graphics and colors](#change-graphics-and-colors)
 - [Change key bindings](#change-key-bindings)
+- [Add or replace sounds and music](#add-or-replace-sounds-and-music)
 
 ---
 
@@ -179,3 +180,81 @@ Edit `src/config/keybindings.ts`:
 - `controlsHelp` holds the texts shown in the lobby's Controls panel. Keep them ASCII.
 
 To add a new **action**, add it to `BoundAction` and `keyBindings`. If it maps 1:1 to a server action, add it to `simpleActions`. A new server action also needs an `InputAction` value on the server, handled in `PlayerGame.HandleInput` or `Match.HandleInput`, plus the matching string in `src/net/types.ts`.
+
+---
+
+## Add or replace sounds and music
+
+The audio system is described in [Frontend > Audio](frontend.md#audio-srcaudio). Everything you can swap is registered in `src/theme/assets.ts`, next to the graphics.
+
+### Balance the volumes
+
+All loudness settings for developers are in **`src/config/sound.ts`**:
+
+| Setting | Affects |
+|---|---|
+| `soundMix.master` | Everything |
+| `soundMix.sfx` / `soundMix.music` | All effects / all music |
+| `soundMix.effects.<id>` | One effect, e.g. `move: 0.5` makes moving half as loud |
+| `soundMix.tracks.<track id>` | One music track. Tracks not listed play at 1 |
+| `defaultSfxVolume` / `defaultMusicVolume` | Where the player's sliders start (0..1) when no settings are saved yet |
+
+Every value multiplies the level the sound was designed with: `1` is unchanged, `0` is silent (an effect at `0` is not played at all), and values above `1` make it louder. The levels apply to synthesized sounds and to registered audio files alike. The player's volume sliders apply on top.
+
+The `volume` numbers inside `synthSounds.ts` and `songs.ts` shape a sound (balance between its tones, or between a song's voices). Change those only when you redesign a sound itself.
+
+### Replace an effect with an audio file
+
+Put the file in `public/assets/sounds/` and register it under its `SoundId`:
+
+```ts
+export const soundFiles: Partial<Record<SoundId, string>> = {
+  lineClear: asset('assets/sounds/line_clear.wav'),
+};
+```
+
+Any format the browser can decode works (wav, mp3, ogg). If the file fails to load, the synth sound is used and a warning is logged.
+
+### Add music tracks
+
+`musicTracks` is a playlist, and you can register as many tracks as you like. Tracks play in shuffled order, and players can switch single tracks off in the lobby.
+
+```ts
+export const musicTracks: MusicTrack[] = [
+  { id: 'pixel_rush', title: 'Pixel Rush', kind: 'synth', song: songs.pixelRush },
+  { id: 'boss_fight', title: 'Boss Fight', kind: 'file', src: asset('assets/sounds/music/boss_fight.mp3') },
+];
+```
+
+- **File track:** put the file in `public/assets/sounds/music/`. The next track starts when the file ends.
+- **Synth track:** add a `SynthSong` to `src/audio/songs.ts`. Each channel is a waveform, a volume and a text pattern: a note name (`C4`, `F#3`, `A#5`) starts a note, `-` holds it, `.` is a rest. Noise channels use `x` (short hit) and `o` (long hit). Shorter channels repeat until the longest one ends. After `loops` repetitions the playlist moves on.
+
+  ```ts
+  const myTune: SynthSong = {
+    bpm: 140,
+    stepsPerBeat: 2, // eighth notes
+    loops: 6,
+    channels: [
+      { wave: 'triangle', volume: 0.3, pattern: 'C3 C4 C3 C4 G2 G3 G2 G3' },
+      { wave: 'square', volume: 0.06, pattern: 'E5 - G5 . C6 - - . B5 - G5 . D5 - - .' },
+      { wave: 'noise', volume: 0.05, pattern: 'x . o .' },
+    ],
+  };
+  ```
+
+The `id` must be unique and stay stable, because disabled tracks are saved by id. To change a track's level, add its id to `soundMix.tracks` in `src/config/sound.ts`.
+
+### Add a new sound effect
+
+1. Add the id to `SoundId` in `src/audio/types.ts`.
+2. Add a recipe to `synthSounds` in `src/audio/synthSounds.ts` (usually a few `tone()` / `noise()` calls) and a volume to `soundMix.effects` in `src/config/sound.ts`. TypeScript reports an error until both exist for every id.
+3. Trigger it with `player.play('myId')`: from `useGameSounds` for something visible in the snapshots, or anywhere through `useSound().player`.
+4. If the server should announce something the client can't detect, add a [match event](#add-a-new-match-event) and react to it in `useGameSounds`.
+
+### Replace the whole engine
+
+The UI only talks to the `SoundPlayer` interface (`src/audio/types.ts`). To use a different audio library, implement that interface and pass it in `main.tsx`:
+
+```tsx
+<SoundProvider createPlayer={() => new MyHowlerPlayer()}>
+```

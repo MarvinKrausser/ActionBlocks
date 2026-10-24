@@ -17,6 +17,7 @@ Online player-vs-player falling-block game with items.
 - **1-9** selects the item target (1 = you, 2.. = opponents in the order shown). **F** uses the first item on the target.
 - You never see who targets you, but every opponent's items are shown beneath their mini field.
 - Item names flash on top of the field they hit.
+- Retro sound effects and a background music playlist, all synthesized in the browser. Any sound can be swapped for an audio file. The speaker button in the upper right corner opens volume sliders and mute buttons for effects and music. **M** mutes everything, **B** toggles the music, **N** skips the track.
 
 Controls: arrows or WASD to move/rotate/soft drop, Space for hard drop, Z/Q/Ctrl to rotate left, C/Shift to hold.
 
@@ -74,3 +75,4 @@ The reverse proxy (attached to both networks) should route:
 - Block colors are in `src/theme/colors.ts`.
 - Block drawing style is in `src/render/draw.ts`.
 - Key bindings are in `src/config/keybindings.ts`.
+- Sound files and music tracks are registered in `src/theme/assets.ts` (`soundFiles`, `musicTracks`). All volume levels are in `src/config/sound.ts`.

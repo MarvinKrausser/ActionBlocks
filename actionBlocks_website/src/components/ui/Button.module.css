@@ -39,3 +39,20 @@
   color: var(--color-accent);
   border-color: var(--color-accent);
 }
+
+.danger {
+  background: var(--color-danger);
+  border-color: var(--color-danger);
+  color: var(--color-fg);
+}
+
+.small {
+  padding: 6px 10px;
+  font-size: 8px;
+  box-shadow: 2px 2px 0 var(--color-dim);
+}
+
+.small:active:not(:disabled) {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 var(--color-dim);
+}

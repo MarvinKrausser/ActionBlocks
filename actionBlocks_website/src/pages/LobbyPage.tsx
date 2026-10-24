@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { Logo } from '../components/Logo';
+import { MusicTracks } from '../components/MusicTracks';
+import { CornerControls } from '../components/CornerControls';
 import { Button } from '../components/ui/Button';
 import { Panel } from '../components/ui/Panel';
 import { controlsHelp } from '../config/keybindings';
@@ -43,10 +45,8 @@ export function LobbyPage({ lobby, playerId, actions }: Props) {
     <main className={styles.page}>
       <header className={styles.header}>
         <Logo small />
-        <Button variant="secondary" onClick={() => void actions.leaveLobby()}>
-          Leave
-        </Button>
       </header>
+      <CornerControls onLeave={() => void actions.leaveLobby()} />
 
       <Panel title="Lobby code" className={styles.codePanel}>
         <div className={styles.code}>{lobby.code}</div>
@@ -117,6 +117,10 @@ export function LobbyPage({ lobby, playerId, actions }: Props) {
               </li>
             ))}
           </ul>
+        </Panel>
+
+        <Panel title="Music">
+          <MusicTracks />
         </Panel>
       </div>
     </main>

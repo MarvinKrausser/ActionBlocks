@@ -1,12 +1,15 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCurrentTrack, useSound } from '../audio/SoundContext';
+import { useGameSounds } from '../audio/useGameSounds';
 import { BoardCanvas } from '../components/BoardCanvas';
 import { ItemBar } from '../components/ItemBar';
 import { ItemFlashOverlay } from '../components/ItemFlashOverlay';
 import { Logo } from '../components/Logo';
 import { MiniBoard } from '../components/MiniBoard';
 import { PiecePreview } from '../components/PiecePreview';
+import { CornerControls } from '../components/CornerControls';
 import { useKeyboardInput } from '../input/useKeyboardInput';
-import type { Lobby, MatchState } from '../net/types';
+import type { InputAction, Lobby, MatchState } from '../net/types';
 import type { GameActions, ItemFlash } from '../net/useGameConnection';
 import { itemVisual } from '../theme/assets';
 import styles from './GamePage.module.css';
@@ -56,9 +59,22 @@ export function GamePage({ match, lobby, playerId, flashes, actions }: Props) {
     [me, opponents, actions],
   );
 
+  const { player } = useSound();
+  const track = useCurrentTrack();
+  useGameSounds(match, playerId);
+
+  // A hard drop can't be told apart from a normal lock in the snapshots, so it sounds on input.
+  const onAction = useCallback(
+    (action: InputAction) => {
+      if (action === 'HardDrop') player.play('hardDrop');
+      actions.sendInput(action);
+    },
+    [actions, player],
+  );
+
   useKeyboardInput({
     enabled: !!me?.alive && match.phase !== 'finished',
-    onAction: actions.sendInput,
+    onAction,
     onTarget,
   });
 
@@ -70,8 +86,15 @@ export function GamePage({ match, lobby, playerId, flashes, actions }: Props) {
     <main className={styles.page}>
       <header className={styles.header}>
         <Logo small />
-        <span className={styles.lobbyCode}>LOBBY {lobby.code}</span>
+        <div className={styles.headerInfo}>
+          {track && <span className={styles.track}>MUSIC: {track.title} (N)</span>}
+          <span className={styles.lobbyCode}>LOBBY {lobby.code}</span>
+        </div>
       </header>
+      <CornerControls
+        onLeave={() => void actions.leaveLobby()}
+        leaveConfirm={!!me?.alive && match.phase !== 'finished'}
+      />
 
       <div className={styles.arena}>
         {me ? (

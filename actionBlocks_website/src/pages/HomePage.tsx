@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { Logo } from '../components/Logo';
+import { CornerControls } from '../components/CornerControls';
 import { Button } from '../components/ui/Button';
 import { Panel } from '../components/ui/Panel';
 import type { GameActions } from '../net/useGameConnection';
@@ -57,6 +58,7 @@ export function HomePage({ connected, actions }: Props) {
 
   return (
     <main className={styles.page}>
+      <CornerControls />
       <Logo />
       <p className={styles.tagline}>Stack. Clear. Collect. Strike.</p>
 

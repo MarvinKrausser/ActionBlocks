@@ -10,7 +10,9 @@ actionBlocks_website/
 │   ├── config.js              # runtime config (overwritten in the container)
 │   └── assets/                # exchangeable graphics
 │       ├── favicon.svg
-│       └── items/*.svg        # one icon per item id (+ unknown.svg)
+│       ├── items/*.svg        # one icon per item id (+ unknown.svg)
+│       ├── ui/                # UI icons (sound menu)
+│       └── sounds/            # optional audio files (+ music/)
 ├── docker/
 │   ├── nginx.conf
 │   └── 40-runtime-config.sh   # writes config.js from env SERVER_URL
@@ -25,6 +27,7 @@ actionBlocks_website/
     │   ├── hubClient.ts       # typed SignalR wrapper
     │   └── useGameConnection.ts  # React hook: connection + all server state
     ├── input/useKeyboardInput.ts # keyboard → game actions (with DAS/ARR)
+    ├── audio/                 # sound effects + music (see "Audio" below)
     ├── render/
     │   ├── draw.ts            # canvas drawing: blocks, items, ghost, board, previews
     │   └── shapes.ts          # piece shapes for previews
@@ -34,7 +37,7 @@ actionBlocks_website/
     │   └── assets.ts          # registry of every graphic + item visuals
     ├── pages/                 # HomePage, LobbyPage, GamePage (+ .module.css)
     └── components/            # BoardCanvas, MiniBoard, PiecePreview, ItemBar,
-                               # ItemFlashOverlay, Logo, ui/Button, ui/Panel
+                               # ItemFlashOverlay, Logo, CornerControls, SoundMenu, MusicTracks, ui/Button, ui/Panel
 ```
 
 ## Data flow
@@ -88,6 +91,7 @@ Layout: **hold + stats + "1 YOU"**, then the **own board** with the garbage mete
   - The selected target lives in local state, `targetId`. Slot `1` is yourself and slot `n ≥ 2` is `opponents[n-2]`, in match order excluding yourself.
   - A key press updates the local state and calls `selectTarget` on the server.
   - If the target dies, an effect resets it to yourself, which mirrors the server rule. The selected board gets a cyan frame, and its slot number is filled cyan.
+- **Leave.** The Leave button in the corner calls `leaveLobby`. While you are still alive in a match, leaving gives up that match, so the first click only turns the button into a red `SURE?` for 3 s and a second click leaves. After you are out, or once the match has finished, one click is enough. No browser dialog is used, because dialogs block the page.
 - **Overlays on the own board:** `ItemFlashOverlay` (flashes whose `targetId` is you), the countdown number, and "YOU WIN!" or "<name> WINS".
 - **Blackout.** `hideStack={me.invisibleRemaining > 0}` makes `drawBoard` skip locked cells, item icons and the ghost.
 - **Garbage meter.** A red bar whose height is `pendingGarbage × cell`.
@@ -133,6 +137,52 @@ Everything visual can be swapped without touching component logic:
 The pixel font (*Press Start 2P*) has **no arrow, ellipsis or dash glyphs**, so UI text uses ASCII only ("LEFT RIGHT", "...", "-", ">").
 
 Asset paths go through the `asset()` helper in `assets.ts` (`import.meta.env.BASE_URL + path`), so they stay correct when the site is served under a sub-path.
+
+## Audio (`src/audio/`)
+
+All sound is generated in the browser with the **Web Audio API**: oscillators (square, triangle, sawtooth) and filtered noise with short volume envelopes, in the style of old console sound chips. No audio files are needed, but any effect or music track can be replaced by a file.
+
+| File | Role |
+|---|---|
+| `../config/sound.ts` | **Central volume mix for developers**: master, sfx, music, per effect, per track, default slider positions |
+| `types.ts` | `SoundId` (all effects), `SoundPlayer` (the interface the UI talks to), `MusicTrack`, `SynthSong`, `SoundSettings` |
+| `synthSounds.ts` | One recipe per `SoundId`, plus the `tone()` / `noise()` helpers |
+| `music.ts` | `SynthSongPlayer`: plays a `SynthSong` with a lookahead scheduler on the audio clock |
+| `songs.ts` | The three built-in songs, written as text patterns |
+| `MusicPlaylist.ts` | Plays the registered tracks in shuffled order. Each track plays once before the order is reshuffled. File tracks advance when they end, synth songs after `loops` repetitions |
+| `AudioEngine.ts` | `WebAudioPlayer implements SoundPlayer`: owns the `AudioContext`, the SFX and music volume nodes, file loading with fallback to the synth, and a 30 ms per-sound throttle |
+| `settings.ts` | `sfxMuted`, `musicMuted`, both volumes and the disabled tracks, saved in `localStorage`. An old single `muted` flag is migrated to both |
+| `SoundContext.tsx` | `SoundProvider` (wraps `<App/>` in `main.tsx`) and the `useSound()` / `useCurrentTrack()` hooks. It also handles the global **M** (all sound on/off), **B** (music on/off) and **N** (next track) keys |
+| `useGameSounds.ts` | Compares each snapshot with the previous one and plays the matching sounds |
+
+**When sounds play.** Everything comes from data the client already receives, so the server is unchanged. Snapshots are server-confirmed, so a blocked move or rotation stays silent.
+
+| Sound | Trigger |
+|---|---|
+| `countdown`, `go` | Countdown number changes; phase changes to `running` (music starts) |
+| `move`, `rotate` | Own active piece moved sideways or changed shape |
+| `hold` | `holdUsed` became true |
+| `lock` | Next queue advanced without a line clear |
+| `hardDrop` | Sent from `GamePage` when the HardDrop input is sent (a hard drop looks like any other lock in the snapshot) |
+| `lineClear` (pitch rises per line), `quad` | `lines` increased by 1–3, or by 4 |
+| `itemPickup`, `itemUse` | Own inventory grew or shrank |
+| `itemHit` | `itemUsed` event targeting you |
+| `garbageIncoming` | `pendingGarbage` increased |
+| `knockout`, `lose`, `win` | An opponent was eliminated; you were eliminated; you won (music stops when the match finishes) |
+
+The music tempo rises slightly with your level, by 3 % per level and at most 30 %.
+
+**Autoplay.** Browsers block audio until the user interacts with the page. The `AudioContext` is created on the first key press or click, which always happens before a match starts.
+
+**UI.**
+
+- `CornerControls` is fixed in the upper right corner of every screen (16px from the edges): the `SoundMenu` speaker button, and below it a small Leave button in the lobby and the game.
+- Clicking the speaker button opens an inline strip to its left, in the header row, so it never covers a board and doesn't pause the game. The strip has a mute button and a volume slider each for `SFX` and `MUSIC`. Moving a muted slider unmutes that channel. Escape, a click outside or the button close the strip. Buttons and sliders give keyboard focus back to the page after use, so game keys keep working.
+- The speaker icons are `uiAssets.soundOn` / `soundOff` (`public/assets/ui/`).
+- `MusicTracks` lists one checkbox per track in the lobby's "Music" panel.
+- The game header shows the current track. While music is muted the playlist doesn't run at all.
+
+**Debugging.** In dev builds every played sound is logged with `console.debug` as `[sound] <id>`, and music changes as `[music] play|stop <track id>`. Enable the "Verbose" level in devtools to see them.
 
 ## Runtime configuration
 

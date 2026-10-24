@@ -21,6 +21,11 @@ export const keyBindings: Record<BoundAction, string[]> = {
 /** Number row keys select the item target: 1 = yourself, 2..9 = opponents in display order. */
 export const targetKeys = ['Digit1', 'Digit2', 'Digit3', 'Digit4', 'Digit5', 'Digit6', 'Digit7', 'Digit8', 'Digit9'];
 
+/** Global sound keys, active on every screen. */
+export const muteKey = 'KeyM';
+export const musicKey = 'KeyB';
+export const nextTrackKey = 'KeyN';
+
 /** Delayed auto shift and auto repeat rate in milliseconds. */
 export const DAS_MS = 167;
 export const ARR_MS = 33;
@@ -35,6 +40,9 @@ export const controlsHelp: { keys: string; action: string }[] = [
   { keys: 'C / SHIFT', action: 'Hold' },
   { keys: '1 - 9', action: 'Select target (1 = you)' },
   { keys: 'F', action: 'Use item on target' },
+  { keys: 'M', action: 'All sound on/off' },
+  { keys: 'B', action: 'Music on/off' },
+  { keys: 'N', action: 'Next music track' },
 ];
 
 export const simpleActions: Partial<Record<BoundAction, InputAction>> = {

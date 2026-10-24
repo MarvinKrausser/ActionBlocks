@@ -1,6 +1,9 @@
+import { songs } from '../audio/songs';
+import type { MusicTrack, SoundId } from '../audio/types';
+
 /**
- * Central registry of every graphic the game uses. Replace the files in /public/assets
- * (or point these paths elsewhere) to change the look without touching components.
+ * Central registry of every graphic and sound the game uses. Replace the files in /public/assets
+ * (or point these paths elsewhere) to change the look and sound without touching components.
  */
 
 /** Resolves a file in /public relative to where the site is served (works under sub-paths). */
@@ -62,7 +65,25 @@ export const uiAssets = {
   /** Optional logo image. When null the text logo is rendered. */
   logo: null as string | null,
   favicon: asset('assets/favicon.svg'),
+  soundOn: asset('assets/ui/sound_on.svg'),
+  soundOff: asset('assets/ui/sound_off.svg'),
 };
+
+/**
+ * Optional audio files that replace the synthesized sound effects. Put the files in
+ * /public/assets/sounds/. Effects without an entry (or whose file fails to load) use the synth.
+ */
+export const soundFiles: Partial<Record<SoundId, string>> = {
+  // lineClear: asset('assets/sounds/line_clear.wav'),
+};
+
+/** Background music, played as a shuffled playlist during matches. Add as many tracks as you like. */
+export const musicTracks: MusicTrack[] = [
+  { id: 'pixel_rush', title: 'Pixel Rush', kind: 'synth', song: songs.pixelRush },
+  { id: 'neon_stack', title: 'Neon Stack', kind: 'synth', song: songs.neonStack },
+  { id: 'last_line', title: 'Last Line', kind: 'synth', song: songs.lastLine },
+  // { id: 'my_track', title: 'My Track', kind: 'file', src: asset('assets/sounds/music/my_track.mp3') },
+];
 
 export function itemVisual(id: string): ItemVisual {
   return itemVisuals[id] ?? unknownItem;

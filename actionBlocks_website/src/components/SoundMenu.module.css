@@ -1,0 +1,70 @@
+.menu {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  gap: 12px;
+  white-space: nowrap;
+}
+
+.iconButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  background: var(--color-bg);
+  border: 2px solid var(--color-fg);
+  cursor: pointer;
+}
+
+.iconButton img {
+  width: 16px;
+  height: 16px;
+  image-rendering: pixelated;
+}
+
+.iconButton:hover {
+  border-color: var(--color-accent);
+}
+
+.iconButton:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.toggle {
+  flex-shrink: 0;
+}
+
+.active {
+  border-color: var(--color-accent);
+  box-shadow: 2px 2px 0 var(--color-dim);
+}
+
+.strip {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.channel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.label {
+  font-size: 8px;
+}
+
+.channel input {
+  width: 80px;
+  margin: 0;
+  accent-color: var(--color-accent);
+}
+
+.muted .label,
+.muted input {
+  opacity: 0.4;
+}
