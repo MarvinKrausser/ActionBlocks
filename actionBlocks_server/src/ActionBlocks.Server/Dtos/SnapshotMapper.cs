@@ -55,12 +55,14 @@ public static class SnapshotMapper
     }
 
     private static ActivePieceDto ToDto(ActivePiece piece, Board board) =>
-        new((int)piece.Type, ToCells(piece, board), piece.Spec.ItemMinoIndex, piece.Spec.ItemId);
+        new((int)piece.Type, ToCells(piece, board), ToItems(piece.Spec));
 
     private static int[][] ToCells(ActivePiece piece, Board board) =>
         piece.Cells().Select(c => new[] { c.X, c.Y - board.BufferRows }).ToArray();
 
-    private static PieceDto ToDto(PieceSpec spec) => new((int)spec.Type, spec.ItemId, spec.ItemMinoIndex);
+    private static PieceDto ToDto(PieceSpec spec) => new((int)spec.Type, ToItems(spec));
+
+    private static string?[] ToItems(PieceSpec spec) => spec.Items?.ToArray() ?? new string?[4];
 
     private static MatchEventDto ToDto(MatchEvent e) => e switch
     {

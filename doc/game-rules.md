@@ -114,7 +114,7 @@ A player is eliminated when any of these happens:
 
 ### Spawning and collecting
 
-- Each **newly generated** piece has a 10% chance (`GameSettings.ItemSpawnChance`) to carry an item. The item sits in one random mino of the four. The roll happens when the piece enters the queue, so items are already visible in the preview and in hold (`Items/ItemRegistry.cs`, `ItemSpawner`).
+- Each of the four minos of a **newly generated** piece has its own 10% chance (`GameSettings.ItemSpawnChance`, env `ITEM_SPAWN_CHANCE`) to carry an item, so one piece can carry several items (up to four). Each item is picked separately. The roll happens when the piece enters the queue, so items are already visible in the preview and in hold (`Items/ItemRegistry.cs`, `ItemSpawner`).
 - When the piece locks, the item stays in that cell of the board. Item cells move with the board: they drop when lines below them clear, rise with garbage, and travel along when boards are swapped.
 - **Clearing the row that contains the item cell** moves the item into the player's inventory.
 - If the cell is destroyed another way (for example by *Clear Line* or *Wipe Out*), the item is lost.

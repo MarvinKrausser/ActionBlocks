@@ -132,13 +132,12 @@ sequenceDiagram
   "active": {
     "type": 7,
     "cells": [[4,-1],[3,0],[4,0],[5,0]],
-    "itemIndex": 2,                // which of the 4 cells carries the item, -1 if none
-    "itemId": "swap"
+    "items": [null, null, "swap", null]  // items[i] is the item in cells[i], null if none
   },
   "ghost": [[4,17],[3,18],[4,18],[5,18]],
-  "hold": { "type": 3, "itemId": null, "itemIndex": -1 },
+  "hold": { "type": 3, "items": [null, null, null, null] },
   "holdUsed": false,
-  "next": [ { "type": 4, "itemId": null, "itemIndex": -1 }, … ],
+  "next": [ { "type": 4, "items": ["nuke", null, null, "blind"] }, … ],
   "inventory": ["add_line", "blind"],   // oldest first; inventory[0] is used by F
   "score": 1250,
   "lines": 12,

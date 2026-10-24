@@ -35,17 +35,18 @@ public class PlayerGameTests
     }
 
     [Fact]
-    public void Item_inside_piece_is_collected_when_its_row_clears()
+    public void Items_inside_piece_are_collected_when_their_row_clears()
     {
         var player = CreatePlayer(itemChance: 1, pieces: PieceType.I);
         FillRow(player.Board, Bottom(player.Board), 3, 4, 5, 6);
         player.Start();
-        var itemId = player.Active!.Spec.ItemId;
-        Assert.NotNull(itemId);
+        var items = player.Active!.Spec.Items;
+        Assert.NotNull(items);
+        Assert.All(items, i => Assert.NotNull(i));
 
         player.HandleInput(InputAction.HardDrop);
 
-        Assert.Equal([itemId!], player.Inventory);
+        Assert.Equal(items.Order(), player.Inventory.Order());
     }
 
     [Fact]
@@ -58,7 +59,7 @@ public class PlayerGameTests
 
         Assert.Empty(player.Inventory);
         var bottom = Bottom(player.Board);
-        Assert.Contains(Enumerable.Range(0, 10), x => player.Board[x, bottom].ItemId is not null);
+        Assert.Equal(4, Enumerable.Range(0, 10).Count(x => player.Board[x, bottom].ItemId is not null));
     }
 
     [Fact]

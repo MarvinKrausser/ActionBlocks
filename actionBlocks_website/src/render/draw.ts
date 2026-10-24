@@ -115,7 +115,8 @@ export function drawBoard(
   active.cells.forEach(([x, y], index) => {
     if (y < 0) return;
     drawBlock(ctx, x * cell, y * cell, cell, color);
-    if (active.itemId && index === active.itemIndex) drawItemIcon(ctx, x * cell, y * cell, cell, active.itemId);
+    const itemId = active.items[index];
+    if (itemId) drawItemIcon(ctx, x * cell, y * cell, cell, itemId);
   });
 }
 
@@ -141,6 +142,7 @@ export function drawPreviewPiece(
     const px = Math.round(ox + x * cell);
     const py = Math.round(oy + y * cell);
     drawBlock(ctx, px, py, cell, color);
-    if (piece.itemId && index === piece.itemIndex) drawItemIcon(ctx, px, py, cell, piece.itemId);
+    const itemId = piece.items[index];
+    if (itemId) drawItemIcon(ctx, px, py, cell, itemId);
   });
 }

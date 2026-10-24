@@ -125,6 +125,43 @@ public class ItemTests
     {
         Assert.Equal(5, ItemRegistry.Default.All.Select(i => i.Id).Distinct().Count());
     }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-1)]
+    public void Spawner_with_zero_chance_never_adds_items(double chance)
+    {
+        var spawner = new ItemSpawner(ItemRegistry.Default, chance, new Random(1));
+
+        Assert.All(Enumerable.Range(0, 100), _ => Assert.False(spawner.Decorate(PieceType.T).HasItem));
+    }
+
+    [Theory]
+    [InlineData(1)]
+    [InlineData(2)]
+    public void Spawner_with_full_chance_puts_an_item_in_every_mino(double chance)
+    {
+        var spawner = new ItemSpawner(ItemRegistry.Default, chance, new Random(1));
+
+        var spec = spawner.Decorate(PieceType.T);
+
+        Assert.NotNull(spec.Items);
+        Assert.Equal(4, spec.Items.Count);
+        Assert.All(spec.Items, i => Assert.NotNull(i));
+    }
+
+    [Fact]
+    public void Spawner_rolls_each_mino_separately()
+    {
+        var spawner = new ItemSpawner(ItemRegistry.Default, 0.5, new Random(1));
+
+        var counts = Enumerable.Range(0, 1000)
+            .Select(_ => spawner.Decorate(PieceType.T).Items?.Count(i => i is not null) ?? 0)
+            .ToList();
+
+        Assert.Contains(counts, c => c >= 2);
+        Assert.InRange(counts.Average(), 1.8, 2.2);
+    }
 }
 
 public class MatchTests

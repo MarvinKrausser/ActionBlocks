@@ -53,6 +53,7 @@ The reverse proxy (attached to both networks) should route:
 | `ALLOWED_ORIGINS` | server | Comma-separated CORS origins. Empty allows any origin. |
 | `HUB_PATH` | server | Hub endpoint path (default `/hub`). |
 | `PATH_BASE` | server | Prefix to accept when the proxy forwards a sub-path unstripped, e.g. `/server`. |
+| `ITEM_SPAWN_CHANCE` | server | Chance (0..1) that each block of a new piece carries an item. Default `0.1`. Passed as `Game__ItemSpawnChance`. |
 | `Game__*` | server | Overrides any `GameSettings` value, e.g. `Game__ItemSpawnChance=0.2`. |
 
 ## Extending

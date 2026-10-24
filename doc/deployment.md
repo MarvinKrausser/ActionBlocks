@@ -59,7 +59,8 @@ cp .env.example .env
 | `ALLOWED_ORIGINS` | server | empty → any origin | Comma-separated list of origins allowed to connect, e.g. `https://game.example.com` |
 | `PATH_BASE` | server | empty | Prefix to accept if the proxy forwards a sub-path **without stripping it**, e.g. `/server` |
 | `HUB_PATH` | server | `/hub` | Hub endpoint path. It is fixed to `/hub` in the compose file |
-| `Game__<Setting>` | server | see `GameSettings.cs` | Overrides gameplay values, e.g. `Game__ItemSpawnChance=0.2`. Add these under the server's `environment:` in the compose file |
+| `ITEM_SPAWN_CHANCE` | server | `0.1` | Chance (0..1) that each block of a new piece carries an item. Passed to the server as `Game__ItemSpawnChance` |
+| `Game__<Setting>` | server | see `GameSettings.cs` | Overrides other gameplay values, e.g. `Game__CountdownSeconds=5`. Add these under the server's `environment:` in the compose file |
 
 Start or update:
 

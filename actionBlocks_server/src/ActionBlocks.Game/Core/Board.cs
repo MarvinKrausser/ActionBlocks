@@ -41,7 +41,7 @@ public sealed class Board
         var i = 0;
         foreach (var c in piece.Cells())
         {
-            var item = i == piece.Spec.ItemMinoIndex ? piece.Spec.ItemId : null;
+            var item = piece.Spec.Items is { } items && i < items.Count ? items[i] : null;
             _rows[c.Y][c.X] = new Cell((byte)piece.Type, item);
             i++;
         }

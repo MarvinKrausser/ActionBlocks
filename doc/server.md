@@ -50,7 +50,7 @@ actionBlocks_server/
 
 ```csharp
 readonly record struct Cell(byte Color, string? ItemId = null)  // Color 0 = empty, 1-7 pieces, 8 garbage
-sealed record PieceSpec(PieceType Type, string? ItemId, int ItemMinoIndex)  // what sits in the queue
+sealed record PieceSpec(PieceType Type, IReadOnlyList<string?>? Items)  // what sits in the queue; Items[i] = item in mino i
 sealed record ActivePiece(PieceSpec Spec, int X, int Y, int Rotation)     // a spec placed on the board
 ```
 
@@ -115,7 +115,7 @@ public sealed record ItemContext(PlayerGame User, PlayerGame Target, Random Rand
 ```
 
 - `ItemRegistry.Default` lists all active items. `ItemRegistry.PickRandom` chooses an item weighted by `SpawnWeight`.
-- `ItemSpawner.Decorate(type)` turns a raw piece type into a `PieceSpec`, sometimes with an item.
+- `ItemSpawner.Decorate(type)` turns a raw piece type into a `PieceSpec`. Each mino rolls `ItemSpawnChance` on its own, so a piece can carry 0–4 items.
 
 See [Extending → Add an item](extending.md#add-a-new-item).
 

@@ -30,6 +30,7 @@ services:
       ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-}
       HUB_PATH: /hub
       PATH_BASE: ${PATH_BASE:-}
+      Game__ItemSpawnChance: ${ITEM_SPAWN_CHANCE:-0.1}
     networks:
       - actionBlocks_server
 

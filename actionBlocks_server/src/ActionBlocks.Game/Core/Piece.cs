@@ -1,12 +1,12 @@
 namespace ActionBlocks.Game.Core;
 
 /// <summary>
-/// A piece definition as it travels through the queue: its shape plus an optional item
-/// hidden inside one of its minos.
+/// A piece definition as it travels through the queue: its shape plus optional items
+/// hidden inside its minos. <see cref="Items"/>[i] is the item in mino i (null = none).
 /// </summary>
-public sealed record PieceSpec(PieceType Type, string? ItemId = null, int ItemMinoIndex = -1)
+public sealed record PieceSpec(PieceType Type, IReadOnlyList<string?>? Items = null)
 {
-    public bool HasItem => ItemId is not null;
+    public bool HasItem => Items?.Any(i => i is not null) == true;
 }
 
 /// <summary>A piece placed somewhere on the board (position = top-left corner of its bounding box).</summary>

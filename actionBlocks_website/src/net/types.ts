@@ -30,8 +30,8 @@ export interface JoinResult {
 
 export interface PieceInfo {
   type: number;
-  itemId: string | null;
-  itemIndex: number;
+  /** items[i] is the item in mino i, null if none. */
+  items: (string | null)[];
 }
 
 export interface ItemCell {
@@ -43,8 +43,8 @@ export interface ItemCell {
 export interface ActivePieceState {
   type: number;
   cells: [number, number][];
-  itemIndex: number;
-  itemId: string | null;
+  /** items[i] is the item in cells[i], null if none. */
+  items: (string | null)[];
 }
 
 export interface PlayerState {

@@ -18,7 +18,7 @@ public sealed record GameSettings
     public int LinesPerLevel { get; init; } = 10;
     public int MaxLevel { get; init; } = 15;
 
-    /// <summary>Chance (0..1) that a newly generated piece carries an item.</summary>
+    /// <summary>Chance (0..1) that each mino of a newly generated piece carries an item.</summary>
     public double ItemSpawnChance { get; init; } = 0.1;
     public int MaxInventory { get; init; } = 10;
 

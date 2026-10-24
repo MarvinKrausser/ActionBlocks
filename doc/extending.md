@@ -95,10 +95,11 @@ All numbers are in `ActionBlocks.Game/GameSettings.cs`. There are two ways to ch
   ```yaml
   actionblocks-server:
     environment:
-      Game__ItemSpawnChance: "0.15"
       Game__MaxInventory: "6"
       Game__LockDelaySeconds: "0.6"
   ```
+
+  The item chance already has its own variable: set `ITEM_SPAWN_CHANCE` in `.env` (the compose file passes it as `Game__ItemSpawnChance`).
 
 To add a **new** setting, add an `init` property with a default to `GameSettings` and read it where needed. Configuration binding picks it up automatically.
 

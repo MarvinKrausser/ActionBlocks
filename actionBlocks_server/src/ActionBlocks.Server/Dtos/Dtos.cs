@@ -14,11 +14,13 @@ public sealed record LobbyDto(
 
 public sealed record JoinResultDto(string PlayerId, LobbyDto Lobby);
 
-public sealed record PieceDto(int Type, string? ItemId, int ItemIndex);
+/// <summary><see cref="Items"/>[i] is the item in mino i, null if none.</summary>
+public sealed record PieceDto(int Type, string?[] Items);
 
 public sealed record ItemCellDto(int X, int Y, string ItemId);
 
-public sealed record ActivePieceDto(int Type, int[][] Cells, int ItemIndex, string? ItemId);
+/// <summary><see cref="Items"/>[i] is the item in <see cref="Cells"/>[i], null if none.</summary>
+public sealed record ActivePieceDto(int Type, int[][] Cells, string?[] Items);
 
 public sealed record PlayerStateDto(
     string Id,
