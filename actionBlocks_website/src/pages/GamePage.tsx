@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useCurrentTrack, useSound } from '../audio/SoundContext';
 import { useGameSounds } from '../audio/useGameSounds';
+import { BlackoutTimer } from '../components/BlackoutTimer';
 import { BoardCanvas } from '../components/BoardCanvas';
 import { ItemBar } from '../components/ItemBar';
 import { ItemFlashOverlay } from '../components/ItemFlashOverlay';
@@ -129,6 +130,7 @@ export function GamePage({ match, lobby, playerId, flashes, actions }: Props) {
                   highlighted={targetId === playerId}
                 >
                   <ItemFlashOverlay flashes={flashesFor(me.id)} />
+                  <BlackoutTimer remaining={me.invisibleRemaining} />
                   {match.phase === 'countdown' && (
                     <div className={styles.overlay}>
                       <span className={styles.countdown}>{Math.ceil(match.countdown)}</span>

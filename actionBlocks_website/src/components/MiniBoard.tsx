@@ -1,6 +1,7 @@
 import { memo } from 'react';
 import type { PlayerState } from '../net/types';
 import type { ItemFlash } from '../net/useGameConnection';
+import { BlackoutTimer } from './BlackoutTimer';
 import { BoardCanvas } from './BoardCanvas';
 import { ItemBar } from './ItemBar';
 import { ItemFlashOverlay } from './ItemFlashOverlay';
@@ -29,6 +30,7 @@ export const MiniBoard = memo(function MiniBoard({ state, width, height, slot, s
       </div>
       <BoardCanvas state={state} width={width} height={height} cell={cell} highlighted={selected}>
         <ItemFlashOverlay flashes={flashes} small />
+        <BlackoutTimer remaining={state.alive ? state.invisibleRemaining : 0} small />
       </BoardCanvas>
       <div className={styles.items} style={{ width: width * cell + 6 }}>
         <ItemBar items={state.inventory} size={Math.max(10, cell)} />
