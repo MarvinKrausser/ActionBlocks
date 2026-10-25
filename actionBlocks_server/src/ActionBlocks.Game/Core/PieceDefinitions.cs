@@ -18,11 +18,22 @@ public static class PieceDefinitions
         [PieceType.S] = (3, [new(1, 0), new(2, 0), new(0, 1), new(1, 1)]),
         [PieceType.Z] = (3, [new(0, 0), new(1, 0), new(1, 1), new(2, 1)]),
         [PieceType.T] = (3, [new(1, 0), new(0, 1), new(1, 1), new(2, 1)]),
+        [PieceType.Dot] = (1, [new(0, 0)]),
+        [PieceType.SmallL] = (2, [new(0, 0), new(0, 1), new(1, 1)]),
+        [PieceType.U] = (3, [new(0, 0), new(2, 0), new(0, 1), new(1, 1), new(2, 1)]),
+        [PieceType.Plus] = (3, [new(1, 0), new(0, 1), new(1, 1), new(2, 1), new(1, 2)]),
+        [PieceType.W] = (3, [new(0, 0), new(0, 1), new(1, 1), new(1, 2), new(2, 2)]),
     };
 
     private static readonly Dictionary<PieceType, Point[][]> Rotations = BuildRotations();
 
     public static IReadOnlyList<PieceType> All { get; } = Enum.GetValues<PieceType>();
+
+    /// <summary>The seven four-cell shapes dealt by the randomizer.</summary>
+    public static IReadOnlyList<PieceType> Standard { get; } = All.Where(t => t <= PieceType.T).ToArray();
+
+    /// <summary>Oddball shapes that only appear while a player is transformed.</summary>
+    public static IReadOnlyList<PieceType> Odd { get; } = All.Where(t => t > PieceType.T).ToArray();
 
     public static int BoxSize(PieceType type) => SpawnShapes[type].BoxSize;
 

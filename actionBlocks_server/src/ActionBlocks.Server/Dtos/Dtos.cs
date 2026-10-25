@@ -39,7 +39,8 @@ public sealed record PlayerStateDto(
     int Lines,
     int Level,
     int PendingGarbage,
-    double InvisibleRemaining);
+    double InvisibleRemaining,
+    double TransformedRemaining);
 
 /// <summary>A match event. <see cref="Type"/> is "itemUsed" or "eliminated".</summary>
 public sealed record MatchEventDto(

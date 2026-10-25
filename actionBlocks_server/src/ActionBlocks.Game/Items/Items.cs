@@ -50,3 +50,14 @@ public sealed class InvisibilityItem : IItem
     public void Apply(ItemContext context) =>
         context.Target.InvisibleUntil = Math.Max(context.Target.InvisibleUntil, context.Now) + DurationSeconds;
 }
+
+public sealed class TransformationItem : IItem
+{
+    public const double DurationSeconds = 8;
+
+    public string Id => "transform";
+    public string DisplayName => "Transformation";
+
+    // Stacks like Blackout.
+    public void Apply(ItemContext context) => context.Target.Transform(context.Now, DurationSeconds);
+}

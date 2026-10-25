@@ -52,6 +52,12 @@ export const itemVisuals: Record<string, ItemVisual> = {
     color: '#c452ff',
     description: 'Hides placed blocks and the drop shadow for 4 seconds. Stacks.',
   },
+  transform: {
+    icon: asset('assets/items/transform.svg'),
+    name: 'Transformation',
+    color: '#ff6fd8',
+    description: "Turns the target's next pieces into odd shapes for 8 seconds. Stacks.",
+  },
 };
 
 export const unknownItem: ItemVisual = {

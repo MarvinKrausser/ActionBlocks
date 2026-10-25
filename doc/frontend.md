@@ -93,7 +93,7 @@ Layout: **hold + stats + "1 YOU"**, then the **own board** with the garbage mete
   - If the target dies, an effect resets it to yourself, which mirrors the server rule. The selected board gets a cyan frame, and its slot number is filled cyan.
 - **Leave.** The Leave button in the corner calls `leaveLobby`. While you are still alive in a match, leaving gives up that match, so the first click only turns the button into a red `SURE?` for 3 s and a second click leaves. After you are out, or once the match has finished, one click is enough. No browser dialog is used, because dialogs block the page.
 - **Overlays on the own board:** `ItemFlashOverlay` (flashes whose `targetId` is you), the countdown number, and "YOU WIN!" or "<name> WINS".
-- **Blackout.** `hideStack={me.invisibleRemaining > 0}` makes `drawBoard` skip locked cells, item icons and the ghost.
+- **Blackout.** `hideStack={me.invisibleRemaining > 0}` makes `drawBoard` skip locked cells, item icons and the ghost. `EffectTimers` shows the seconds left on Blackout and Transformation in the board corner.
 - **Garbage meter.** A red bar whose height is `pendingGarbage × cell`.
 - **Inventory bar.** 10 slots, with the oldest item outlined, plus the hint line `F: <next item> > <target>`.
 - **Mini boards.** `MiniBoard` is memoized. It shows the slot number, the name, the board, a flash overlay and the opponent's **item bar beneath the board**.

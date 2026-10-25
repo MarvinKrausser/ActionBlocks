@@ -17,6 +17,7 @@ public sealed class ItemRegistry
         new ClearBoardItem(),
         new SwapBoardItem(),
         new InvisibilityItem(),
+        new TransformationItem(),
     ]);
 
     public IReadOnlyCollection<IItem> All => _items.Values;
@@ -42,8 +43,6 @@ public sealed class ItemRegistry
 /// <summary>Decides which minos of a new piece carry an item. Each mino rolls <c>chance</c> (0..1) on its own.</summary>
 public sealed class ItemSpawner(ItemRegistry registry, double chance, Random random)
 {
-    private const int MinosPerPiece = 4;
-
     private readonly double _chance = double.IsNaN(chance) ? 0 : Math.Clamp(chance, 0, 1);
 
     public Core.PieceSpec Decorate(Core.PieceType type)
@@ -52,9 +51,9 @@ public sealed class ItemSpawner(ItemRegistry registry, double chance, Random ran
         {
             return new Core.PieceSpec(type);
         }
-        var items = new string?[MinosPerPiece];
+        var items = new string?[Core.PieceDefinitions.Minos(type, 0).Count];
         var any = false;
-        for (var i = 0; i < MinosPerPiece; i++)
+        for (var i = 0; i < items.Length; i++)
         {
             if (random.NextDouble() < _chance)
             {

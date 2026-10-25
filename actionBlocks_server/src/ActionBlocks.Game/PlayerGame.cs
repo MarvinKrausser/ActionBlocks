@@ -92,6 +92,10 @@ public sealed class PlayerGame
     public double InvisibleUntil { get; set; }
     public bool IsInvisible => Now < InvisibleUntil;
 
+    /// <summary>Match time until which this player's upcoming pieces are odd shapes.</summary>
+    public double TransformedUntil { get; private set; }
+    public bool IsTransformed => Now < TransformedUntil;
+
     /// <summary>The player selected as item target (own id = self).</summary>
     public string TargetId { get; set; }
 
@@ -103,7 +107,12 @@ public sealed class PlayerGame
 
     public void Update(double deltaSeconds, double now)
     {
+        var wasTransformed = IsTransformed;
         Now = now;
+        if (wasTransformed && !IsTransformed)
+        {
+            RestoreTransformedPieces();
+        }
         if (!IsAlive || Active is null)
         {
             return;
@@ -280,11 +289,40 @@ public sealed class PlayerGame
 
     public void Forfeit() => TopOut();
 
+    /// <summary>
+    /// Turns the queue into odd shapes for <paramref name="seconds"/> (added to any time left).
+    /// The falling piece stays as it is; pieces still queued or held change back when the time runs out.
+    /// </summary>
+    public void Transform(double now, double seconds)
+    {
+        TransformedUntil = Math.Max(TransformedUntil, now) + seconds;
+        for (var i = 0; i < _next.Count; i++)
+        {
+            if (_next[i].Original is null)
+            {
+                _next[i] = TransformRandomly(_next[i]);
+            }
+        }
+    }
+
+    private PieceSpec TransformRandomly(PieceSpec spec) =>
+        spec.Transform(PieceDefinitions.Odd[_random.Next(PieceDefinitions.Odd.Count)]);
+
+    private void RestoreTransformedPieces()
+    {
+        for (var i = 0; i < _next.Count; i++)
+        {
+            _next[i] = _next[i].Restore();
+        }
+        Hold = Hold?.Restore();
+    }
+
     private void FillQueue()
     {
         while (_next.Count < Math.Max(1, _settings.PreviewCount))
         {
-            _next.Add(_itemSpawner.Decorate(_randomizer.Next()));
+            var spec = _itemSpawner.Decorate(_randomizer.Next());
+            _next.Add(IsTransformed ? TransformRandomly(spec) : spec);
         }
     }
 
@@ -402,7 +440,8 @@ public sealed class PlayerGame
         {
             return;
         }
-        var current = Active.Spec;
+        // A piece left over from an expired Transformation changes back once it is put away.
+        var current = IsTransformed ? Active.Spec : Active.Spec.Restore();
         HoldUsed = true;
         if (Hold is null)
         {

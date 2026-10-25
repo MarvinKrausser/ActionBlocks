@@ -135,6 +135,8 @@ export function drawPreviewPiece(
   if (!shape) return;
   const w = Math.max(...shape.map(([x]) => x)) + 1;
   const h = Math.max(...shape.map(([, y]) => y)) + 1;
+  // Three-row shapes (Transformation) are shrunk to fit the preview box.
+  cell = Math.min(cell, Math.floor(boxHeight / (h + 0.5)));
   const ox = offsetX + (boxWidth - w * cell) / 2;
   const oy = offsetY + (boxHeight - h * cell) / 2;
   const color = dimmed ? '#555555' : (blockColors[piece.type] ?? '#fff');

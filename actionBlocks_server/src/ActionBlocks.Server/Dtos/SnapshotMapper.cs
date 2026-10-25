@@ -51,7 +51,8 @@ public static class SnapshotMapper
             player.Lines,
             player.Level,
             player.PendingGarbage,
-            Math.Round(Math.Max(0, player.InvisibleUntil - match.Now), 2));
+            Math.Round(Math.Max(0, player.InvisibleUntil - match.Now), 2),
+            Math.Round(Math.Max(0, player.TransformedUntil - match.Now), 2));
     }
 
     private static ActivePieceDto ToDto(ActivePiece piece, Board board) =>
@@ -62,7 +63,7 @@ public static class SnapshotMapper
 
     private static PieceDto ToDto(PieceSpec spec) => new((int)spec.Type, ToItems(spec));
 
-    private static string?[] ToItems(PieceSpec spec) => spec.Items?.ToArray() ?? new string?[4];
+    private static string?[] ToItems(PieceSpec spec) => spec.Items?.ToArray() ?? new string?[PieceDefinitions.Minos(spec.Type, 0).Count];
 
     private static MatchEventDto ToDto(MatchEvent e) => e switch
     {

@@ -14,7 +14,7 @@ public sealed class SevenBagRandomizer(Random random) : IRandomizer
     {
         if (_bag.Count == 0)
         {
-            var pieces = PieceDefinitions.All.ToArray();
+            var pieces = PieceDefinitions.Standard.ToArray();
             random.Shuffle(pieces);
             foreach (var p in pieces)
             {

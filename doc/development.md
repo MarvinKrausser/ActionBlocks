@@ -73,7 +73,7 @@ That gives items on almost every piece and a near-instant start, which is useful
 
 **Server**
 
-- File-scoped namespaces, nullable reference types enabled, one main type per file. Small closely related types may share a file, e.g. all five items in `Items.cs`.
+- File-scoped namespaces, nullable reference types enabled, one main type per file. Small closely related types may share a file, e.g. all items in `Items.cs`.
 - `ActionBlocks.Game` must stay free of ASP.NET or serialization dependencies. Mapping to the wire format happens in `ActionBlocks.Server/Dtos`.
 - Game objects are not thread-safe. Only touch them inside `lock (lobby.Sync)`.
 - Prefer adding a value to `GameSettings`, or an implementation of an existing interface, over hard-coding numbers in logic.

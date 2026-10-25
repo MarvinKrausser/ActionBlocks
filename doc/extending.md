@@ -38,7 +38,7 @@ public sealed class SpeedUpItem : IItem
 
 ### 2. Server: add any new state the item needs
 
-If existing `PlayerGame` methods (`InsertGarbageNow`, `RemoveBottomLine`, `ClearBoard`, `SwapBoards`, `InvisibleUntil`) aren't enough, add a property or method to `PlayerGame`. For the example:
+If existing `PlayerGame` methods (`InsertGarbageNow`, `RemoveBottomLine`, `ClearBoard`, `SwapBoards`, `InvisibleUntil`, `Transform`) aren't enough, add a property or method to `PlayerGame`. For the example:
 
 ```csharp
 public double FastUntil { get; set; }
@@ -62,7 +62,7 @@ public static ItemRegistry Default { get; } = new(
 
 ### 4. Server: test it
 
-Add a test to `tests/ActionBlocks.Game.Tests/ItemAndMatchTests.cs`, and update `Registry_contains_five_unique_items` to the new count.
+Add a test to `tests/ActionBlocks.Game.Tests/ItemAndMatchTests.cs`, and update `Registry_contains_six_unique_items` to the new count.
 
 ### 5. Website: add the visuals
 
@@ -81,7 +81,7 @@ The id key must match `IItem.Id`. Unknown ids still work but show `unknown.svg`.
 
 ### 6. Website: show the effect (only if needed)
 
-If the item needs a visual effect, as Blackout does, expose the state in the snapshot (see [below](#add-new-state-to-the-snapshot)) and use it in `GamePage` / `draw.ts`.
+If the item needs a visual effect, as Blackout does, expose the state in the snapshot (see [below](#add-new-state-to-the-snapshot)) and use it in `GamePage` / `draw.ts`. For a timed effect, add an entry to the `effects` list of `EffectTimers` in `GamePage` and `MiniBoard` to show a countdown.
 
 ---
 
@@ -161,7 +161,7 @@ Keep snapshots small. They are sent ~30 times per second for every player to eve
 |---|---|
 | Item icon | Replace the file in `public/assets/items/`, or point `itemVisuals[id].icon` elsewhere |
 | Logo | Put an image in `public/assets/`, set `uiAssets.logo: asset('assets/logo.png')` |
-| Block colors | `src/theme/colors.ts` (`blockColors[1..7]` pieces, `[8]` garbage) |
+| Block colors | `src/theme/colors.ts` (`blockColors[1..7]` pieces, `[8]` garbage, `[9..13]` Transformation shapes) |
 | Block style (bevel, texture, …) | `drawBlock` in `src/render/draw.ts` |
 | Ghost look | `drawGhostCell` in `draw.ts`, `boardColors.ghostAlpha` |
 | UI colors, borders, font | CSS variables in `src/theme/global.css` |

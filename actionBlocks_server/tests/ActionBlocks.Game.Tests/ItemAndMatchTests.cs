@@ -121,9 +121,96 @@ public class ItemTests
     }
 
     [Fact]
-    public void Registry_contains_five_unique_items()
+    public void Transformation_turns_the_queue_into_odd_shapes_but_not_the_falling_piece()
     {
-        Assert.Equal(5, ItemRegistry.Default.All.Select(i => i.Id).Distinct().Count());
+        var target = CreatePlayer("b", pieces: [PieceType.T, PieceType.O, PieceType.S]);
+        target.Start();
+
+        new TransformationItem().Apply(Context(target, target, now: 10));
+
+        Assert.Equal(PieceType.T, target.Active!.Type);
+        Assert.All(target.Next, p => Assert.Contains(p.Type, PieceDefinitions.Odd));
+    }
+
+    [Fact]
+    public void Transformation_deals_odd_shapes_while_active()
+    {
+        var target = CreatePlayer("b");
+        target.Start();
+
+        new TransformationItem().Apply(Context(target, target));
+        for (var i = 0; i < 8; i++)
+        {
+            target.HandleInput(InputAction.HardDrop);
+        }
+
+        Assert.True(target.IsAlive);
+        Assert.Contains(target.Active!.Type, PieceDefinitions.Odd);
+        Assert.All(target.Next, p => Assert.Contains(p.Type, PieceDefinitions.Odd));
+    }
+
+    [Fact]
+    public void Transformation_expiry_restores_queue_and_hold()
+    {
+        var target = CreatePlayer("b", pieces: [PieceType.T, PieceType.O, PieceType.S]);
+        target.Start();
+        var queued = target.Next.Select(p => p.Type).ToList();
+
+        new TransformationItem().Apply(Context(target, target));
+        target.HandleInput(InputAction.HardDrop);
+        target.HandleInput(InputAction.Hold);
+        Assert.Contains(target.Hold!.Type, PieceDefinitions.Odd);
+
+        target.Update(0.01, 7.9);
+        Assert.True(target.IsTransformed);
+        target.Update(0.01, 8.1);
+
+        Assert.False(target.IsTransformed);
+        Assert.Equal(queued[0], target.Hold!.Type);
+        Assert.All(target.Next, p => Assert.Contains(p.Type, PieceDefinitions.Standard));
+    }
+
+    [Fact]
+    public void Transformation_durations_stack()
+    {
+        var target = CreatePlayer("b");
+        target.Start();
+
+        new TransformationItem().Apply(Context(target, target, now: 10));
+        new TransformationItem().Apply(Context(target, target, now: 12));
+
+        target.Update(0.01, 25.9);
+        Assert.True(target.IsTransformed);
+        target.Update(0.01, 26.1);
+        Assert.False(target.IsTransformed);
+    }
+
+    [Fact]
+    public void Transformed_piece_keeps_its_items_and_restores_them()
+    {
+        var spec = new PieceSpec(PieceType.T, [null, "nuke", null, "swap"]);
+
+        var plus = spec.Transform(PieceType.Plus);
+        var dot = plus.Transform(PieceType.Dot);
+
+        Assert.Equal(["nuke", "swap", null, null, null], plus.Items);
+        Assert.Equal(["nuke"], dot.Items);
+        Assert.Same(spec, dot.Restore());
+    }
+
+    [Fact]
+    public void Registry_contains_six_unique_items()
+    {
+        Assert.Equal(6, ItemRegistry.Default.All.Select(i => i.Id).Distinct().Count());
+    }
+
+    [Fact]
+    public void Spawner_sizes_items_to_the_shape()
+    {
+        var spawner = new ItemSpawner(ItemRegistry.Default, 1, new Random(1));
+
+        Assert.Equal(5, spawner.Decorate(PieceType.Plus).Items!.Count);
+        Assert.Single(spawner.Decorate(PieceType.Dot).Items!);
     }
 
     [Theory]

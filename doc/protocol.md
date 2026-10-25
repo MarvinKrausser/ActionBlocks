@@ -143,11 +143,12 @@ sequenceDiagram
   "lines": 12,
   "level": 2,
   "pendingGarbage": 3,             // incoming lines waiting to rise
-  "invisibleRemaining": 0          // seconds of Blackout left (> 0 = hide stack + ghost)
+  "invisibleRemaining": 0,         // seconds of Blackout left (> 0 = hide stack + ghost)
+  "transformedRemaining": 0        // seconds of Transformation left (queue shows odd shapes)
 }
 ```
 
-**Board encoding.** One character per cell: `'0'` is empty, `'1'`–`'7'` are piece colors (I, J, L, O, S, Z, T), `'8'` is garbage. Index = `y * width + x`, where y = 0 is the **top visible row**.
+**Board encoding.** One character per cell: `'0'` is empty, `'1'`–`'7'` are piece colors (I, J, L, O, S, Z, T), `'8'` is garbage, and `'9'`, `':'`, `';'`, `'<'`, `'='` (values 9–13) are the Transformation shapes (Dot, SmallL, U, Plus, W). Decode with `charCode - 48`. Index = `y * width + x`, where y = 0 is the **top visible row**.
 
 **Coordinates.** All `x, y` values are in visible coordinates. Active-piece cells can have **negative y** while the piece is still above the visible area. Clients skip those cells when drawing.
 

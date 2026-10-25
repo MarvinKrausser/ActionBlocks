@@ -52,7 +52,8 @@ export interface PlayerState {
   name: string;
   alive: boolean;
   place: number | null;
-  /** One character per visible cell, row by row: '0' empty, '1'-'7' piece colors, '8' garbage. */
+  /** One character per visible cell, row by row: '0' empty, '1'-'7' piece colors, '8' garbage,
+   *  '9'-'=' (values 9-13) odd shapes from Transformation. Decode with charCodeAt - 48. */
   board: string;
   items: ItemCell[];
   active: ActivePieceState | null;
@@ -66,6 +67,7 @@ export interface PlayerState {
   level: number;
   pendingGarbage: number;
   invisibleRemaining: number;
+  transformedRemaining: number;
 }
 
 export interface MatchEvent {

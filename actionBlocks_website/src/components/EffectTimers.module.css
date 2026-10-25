@@ -1,7 +1,16 @@
-.timer {
+.timers {
   position: absolute;
   top: 4px;
   right: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.timer {
   display: flex;
   align-items: center;
   gap: 6px;
@@ -10,8 +19,6 @@
   background: #000;
   font-size: 12px;
   line-height: 1;
-  pointer-events: none;
-  z-index: 2;
 }
 
 .icon {
@@ -23,6 +30,10 @@
 .small {
   top: 2px;
   right: 2px;
+  gap: 2px;
+}
+
+.small .timer {
   gap: 3px;
   padding: 2px 3px;
   border-width: 2px;
@@ -34,7 +45,7 @@
   height: 8px;
 }
 
-/* Blink during the last second so the return of the board isn't a surprise. */
+/* Blink during the last second so the end of the effect isn't a surprise. */
 .ending {
   animation: blink 0.25s steps(2) infinite;
 }

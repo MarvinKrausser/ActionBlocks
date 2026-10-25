@@ -28,7 +28,7 @@ Pieces spawn in the two buffer rows directly above the visible field. They are h
 ## Pieces and randomizer
 
 - There are 7 shapes. Each has 4 rotation states (0 = spawn, 1 = right, 2 = 180°, 3 = left). States are derived by rotating the spawn shape inside its bounding box (`Core/PieceDefinitions.cs`).
-- The **bag randomizer** shuffles all 7 shapes into a bag and deals them one by one, then refills (`Core/Randomizer.cs`). This guarantees every shape appears exactly once in every 7 pieces.
+- The **bag randomizer** shuffles all 7 shapes into a bag and deals them one by one, then refills (`Core/Randomizer.cs`). This guarantees every shape appears exactly once in every 7 pieces. The odd Transformation shapes are never in the bag.
 
 ## Rotation (SRS)
 
@@ -133,7 +133,7 @@ A player is eliminated when any of these happens:
 - Everyone sees every opponent's inventory in the item bar beneath their mini board.
 - Every client is told when an item hits someone (`ItemUsedEvent`): which player was hit and which item, but not who used it. The item name flashes on top of the hit player's board. That is the big board for yourself, or the mini board for an opponent.
 
-### The five items
+### The six items
 
 | Id | Name | Effect | Class |
 |---|---|---|---|
@@ -142,6 +142,7 @@ A player is eliminated when any of these happens:
 | `nuke` | Wipe Out | Removes **all** locked blocks of the target. The active piece is unaffected. | `ClearBoardItem` |
 | `swap` | Switch | The user and the target exchange all locked blocks. Active pieces, hold, queues, inventories and pending garbage stay with their owners. If an active piece now overlaps, it is pushed up. Does nothing when used on yourself. | `SwapBoardItem` |
 | `blind` | Blackout | For 4 seconds, the target cannot see their locked blocks or their ghost piece. Only the falling piece stays visible. Durations stack: each further Blackout adds 4 s to the time that is left. | `InvisibilityItem` |
+| `transform` | Transformation | For 8 seconds, the target's upcoming pieces become odd shapes: Dot, small L, U, Plus or W (random). The whole next queue changes at once; the falling piece does not. Items inside a piece move to the new shape. When the time runs out, pieces still in the queue or hold change back to what they were. Durations stack like Blackout. | `TransformationItem` |
 
 Every item can also be used on yourself: target `1`. *Wipe Out* and *Clear Line* are useful defensively.
 

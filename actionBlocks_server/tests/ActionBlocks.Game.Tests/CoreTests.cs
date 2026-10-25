@@ -29,6 +29,24 @@ public class CoreTests
     }
 
     [Fact]
+    public void Rotations_keep_the_mino_count()
+    {
+        foreach (var type in PieceDefinitions.All)
+        {
+            var count = PieceDefinitions.Minos(type, 0).Count;
+            Assert.All(Enumerable.Range(1, 3), r => Assert.Equal(count, PieceDefinitions.Minos(type, r).Distinct().Count()));
+        }
+    }
+
+    [Fact]
+    public void Seven_bag_never_deals_odd_shapes()
+    {
+        var randomizer = new SevenBagRandomizer(new Random(42));
+
+        Assert.All(Enumerable.Range(0, 70), _ => Assert.Contains(randomizer.Next(), PieceDefinitions.Standard));
+    }
+
+    [Fact]
     public void Seven_bag_deals_every_shape_once_per_bag()
     {
         var randomizer = new SevenBagRandomizer(new Random(42));

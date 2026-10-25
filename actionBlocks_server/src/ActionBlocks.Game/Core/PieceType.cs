@@ -1,6 +1,9 @@
 namespace ActionBlocks.Game.Core;
 
-/// <summary>The seven four-cell piece shapes. Numeric values double as cell colors (1-7).</summary>
+/// <summary>
+/// Piece shapes. Numeric values double as cell colors: 1-7 are the seven four-cell shapes,
+/// 9-13 the odd shapes dealt only during a Transformation (8 is garbage).
+/// </summary>
 public enum PieceType : byte
 {
     I = 1,
@@ -10,6 +13,11 @@ public enum PieceType : byte
     S = 5,
     Z = 6,
     T = 7,
+    Dot = 9,
+    SmallL = 10,
+    U = 11,
+    Plus = 12,
+    W = 13,
 }
 
 public static class CellColor
