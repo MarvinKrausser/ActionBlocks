@@ -27,12 +27,14 @@ public sealed class SpeedUpItem : IItem
 {
     public string Id => "speed";           // stable id, also used by the frontend
     public string DisplayName => "Speed Up";
-    public int SpawnWeight => 1;           // optional, default 1 (higher = more common)
+    public double? DurationSeconds => 5;   // optional: only for timed items, shown in the lobby
 
     public void Apply(ItemContext context) =>
         context.Target.FastUntil = Math.Max(context.Target.FastUntil, context.Now + 5);
 }
 ```
+
+To make the duration configurable, take it as a constructor parameter like `InvisibilityItem` does.
 
 `ItemContext` gives you the `User`, the `Target`, a shared `Random` and the match time `Now`. Use `context.IsSelfTarget` to special-case self-use.
 
@@ -49,15 +51,21 @@ If the board changes under the active piece, call `ResolveActiveOverlap()` after
 
 ### 3. Server: register it
 
-In `Items/ItemRegistry.cs`:
+In `Items/ItemRegistry.cs`, add it to `FromSettings`:
 
 ```csharp
-public static ItemRegistry Default { get; } = new(
+IItem[] items =
 [
     new AddGarbageLineItem(),
     ...
-    new SpeedUpItem(),
-]);
+    new SpeedUpItem(),   // or new SpeedUpItem(Duration("speed", 5)) for a configurable duration
+];
+```
+
+Then add it to `config/game.json` so its weight (and duration) can be tuned:
+
+```jsonc
+"speed": { "Weight": 1, "DurationSeconds": 5 }
 ```
 
 ### 4. Server: test it
@@ -66,14 +74,15 @@ Add a test to `tests/ActionBlocks.Game.Tests/ItemAndMatchTests.cs`, and update `
 
 ### 5. Website: add the visuals
 
-Add an icon at `actionBlocks_website/public/assets/items/speed.svg`. Any image format works; the existing icons are 8×8 pixel-art SVGs. Then add an entry to `itemVisuals` in `src/theme/assets.ts`:
+Add an icon at `actionBlocks_website/public/assets/items/speed.svg`. Any image format works; the existing icons are 8×8 pixel-art SVGs. Then add an entry to `itemVisuals` in `src/theme/assets.ts`. In `description`, write `{duration}` where the configured duration should appear:
 
 ```ts
 speed: {
   icon: asset('assets/items/speed.svg'),
   name: 'Speed Up',
   color: '#ff9b26',
-  description: 'Target pieces fall very fast for 5 seconds.',
+  description: 'Target pieces fall very fast for {duration} seconds.',
+  defaultDurationSeconds: 5,
 },
 ```
 
@@ -99,7 +108,7 @@ All numbers are in `ActionBlocks.Game/GameSettings.cs`. There are two ways to ch
       Game__LockDelaySeconds: "0.6"
   ```
 
-  The item chance already has its own variable: set `ITEM_SPAWN_CHANCE` in `.env` (the compose file passes it as `Game__ItemSpawnChance`).
+- **Put it in `config/game.json`** (same `"Game"` section). That needs no rebuild and applies from the next match. The item chance, item weights and durations already live there; see [Deployment → Game config](deployment.md#game-config).
 
 To add a **new** setting, add an `init` property with a default to `GameSettings` and read it where needed. Configuration binding picks it up automatically.
 

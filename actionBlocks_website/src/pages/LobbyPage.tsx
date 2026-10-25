@@ -1,13 +1,13 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Logo } from '../components/Logo';
 import { MusicTracks } from '../components/MusicTracks';
 import { CornerControls } from '../components/CornerControls';
 import { Button } from '../components/ui/Button';
 import { Panel } from '../components/ui/Panel';
 import { controlsHelp } from '../config/keybindings';
-import type { Lobby } from '../net/types';
+import type { ItemInfo, Lobby } from '../net/types';
 import type { GameActions } from '../net/useGameConnection';
-import { itemVisuals } from '../theme/assets';
+import { itemDescription, itemVisual, itemVisuals } from '../theme/assets';
 import styles from './LobbyPage.module.css';
 
 interface Props {
@@ -20,6 +20,23 @@ export function LobbyPage({ lobby, playerId, actions }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const isHost = lobby.hostId === playerId;
+  // Items as configured on the server; null until loaded (or if the call fails) = built-in list.
+  const [items, setItems] = useState<ItemInfo[] | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    actions
+      .getItems()
+      .then((list) => !cancelled && setItems(list))
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [actions]);
+
+  const shownItems = items
+    ? items.filter((i) => i.share > 0).map((i) => ({ id: i.id, share: i.share, duration: i.durationSeconds }))
+    : Object.keys(itemVisuals).map((id) => ({ id, share: null, duration: null }));
 
   const copyLink = async () => {
     const url = `${window.location.origin}${window.location.pathname}?code=${lobby.code}`;
@@ -107,15 +124,21 @@ export function LobbyPage({ lobby, playerId, actions }: Props) {
         <Panel title="Items">
           <p className={styles.hint}>Items hide inside blocks. Clear their line to collect them.</p>
           <ul className={styles.items}>
-            {Object.entries(itemVisuals).map(([id, v]) => (
-              <li key={id}>
-                <img src={v.icon} alt="" width={20} height={20} />
-                <div>
-                  <div style={{ color: v.color }}>{v.name}</div>
-                  <div className={styles.itemDescription}>{v.description}</div>
-                </div>
-              </li>
-            ))}
+            {shownItems.map(({ id, share, duration }) => {
+              const v = itemVisual(id);
+              return (
+                <li key={id}>
+                  <img src={v.icon} alt="" width={20} height={20} />
+                  <div className={styles.itemText}>
+                    <div className={styles.itemName}>
+                      <span style={{ color: v.color }}>{v.name}</span>
+                      {share !== null && <span className={styles.itemShare}>{formatShare(share)}</span>}
+                    </div>
+                    <div className={styles.itemDescription}>{itemDescription(v, duration)}</div>
+                  </div>
+                </li>
+              );
+            })}
           </ul>
         </Panel>
 
@@ -125,4 +148,9 @@ export function LobbyPage({ lobby, playerId, actions }: Props) {
       </div>
     </main>
   );
+}
+
+/** Share of spawned items as a percentage, e.g. "17%". */
+function formatShare(share: number): string {
+  return share < 0.01 ? '<1%' : `${Math.round(share * 100)}%`;
 }

@@ -60,4 +60,6 @@ public sealed record MatchStateDto(
     IReadOnlyList<PlayerStateDto> Players,
     IReadOnlyList<MatchEventDto> Events);
 
-public sealed record ItemInfoDto(string Id, string Name);
+/// <param name="Share">Fraction (0..1) of spawned items that are this item; 0 = disabled.</param>
+/// <param name="DurationSeconds">Effect length for timed items, null for instant ones.</param>
+public sealed record ItemInfoDto(string Id, string Name, double Share, double? DurationSeconds);

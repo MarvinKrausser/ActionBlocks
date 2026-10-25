@@ -29,14 +29,14 @@ To play against yourself, open the site in two browser windows. Create a lobby i
 
 ### Handy server settings for testing
 
-Any `GameSettings` value can be overridden with an environment variable:
+`dotnet run` finds `config/game.json` in the repo root automatically. Edit it (changes apply from the next match), point `GAME_CONFIG` to a separate test file, or override single values with environment variables:
 
 ```bash
 Game__ItemSpawnChance=0.9 Game__CountdownSeconds=1 \
   dotnet run --project src/ActionBlocks.Server --urls http://localhost:5080
 ```
 
-That gives items on almost every piece and a near-instant start, which is useful for testing items.
+That gives items on almost every piece and a near-instant start, which is useful for testing items. To test one item, set the weight of all others to 0 in a test config.
 
 ## Commands
 

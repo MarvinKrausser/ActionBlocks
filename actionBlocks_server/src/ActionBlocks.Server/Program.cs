@@ -1,5 +1,5 @@
 using System.Text.Json.Serialization;
-using ActionBlocks.Game;
+using ActionBlocks.Server.Config;
 using ActionBlocks.Server.Hubs;
 using ActionBlocks.Server.Lobbies;
 
@@ -31,12 +31,18 @@ builder.Services
     .AddSignalR()
     .AddJsonProtocol(o => o.PayloadSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
-// Rules can be tuned via configuration, e.g. env Game__ItemSpawnChance=0.2
-builder.Services.AddSingleton(builder.Configuration.GetSection("Game").Get<GameSettings>() ?? new GameSettings());
+// Rules come from the "Game" section: config/game.json (path in GAME_CONFIG, reloaded for each new match),
+// overridable by env vars such as Game__ItemSpawnChance=0.2.
+builder.Services.AddSingleton(
+    GameConfigFile.AddTo(builder.Configuration, builder.Configuration["GAME_CONFIG"], builder.Environment.ContentRootPath));
+builder.Services.AddSingleton<GameConfigProvider>();
 builder.Services.AddSingleton<LobbyManager>();
 builder.Services.AddHostedService<MatchRunner>();
 
 var app = builder.Build();
+
+// Read the game config now, so an invalid file stops the server at startup instead of at the first match.
+app.Services.GetRequiredService<GameConfigProvider>();
 
 if (!string.IsNullOrWhiteSpace(pathBase))
 {

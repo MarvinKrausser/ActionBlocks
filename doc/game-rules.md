@@ -114,7 +114,7 @@ A player is eliminated when any of these happens:
 
 ### Spawning and collecting
 
-- Each of the four minos of a **newly generated** piece has its own 10% chance (`GameSettings.ItemSpawnChance`, env `ITEM_SPAWN_CHANCE`) to carry an item, so one piece can carry several items (up to four). Each item is picked separately. The roll happens when the piece enters the queue, so items are already visible in the preview and in hold (`Items/ItemRegistry.cs`, `ItemSpawner`).
+- Each mino of a **newly generated** piece has its own 10% chance (`ItemSpawnChance` in `config/game.json`) to carry an item, so one piece can carry several items. Which item it is depends on the item **weights** in the same file: share = weight / sum of weights (default: all equal). Each item is picked separately. The roll happens when the piece enters the queue, so items are already visible in the preview and in hold (`Items/ItemRegistry.cs`, `ItemSpawner`).
 - When the piece locks, the item stays in that cell of the board. Item cells move with the board: they drop when lines below them clear, rise with garbage, and travel along when boards are swapped.
 - **Clearing the row that contains the item cell** moves the item into the player's inventory.
 - If the cell is destroyed another way (for example by *Clear Line* or *Wipe Out*), the item is lost.
@@ -141,8 +141,8 @@ A player is eliminated when any of these happens:
 | `clear_line` | Clear Line | Removes the bottom row of the target. Items in it are lost. | `ClearBottomLineItem` |
 | `nuke` | Wipe Out | Removes **all** locked blocks of the target. The active piece is unaffected. | `ClearBoardItem` |
 | `swap` | Switch | The user and the target exchange all locked blocks. Active pieces, hold, queues, inventories and pending garbage stay with their owners. If an active piece now overlaps, it is pushed up. Does nothing when used on yourself. | `SwapBoardItem` |
-| `blind` | Blackout | For 4 seconds, the target cannot see their locked blocks or their ghost piece. Only the falling piece stays visible. Durations stack: each further Blackout adds 4 s to the time that is left. | `InvisibilityItem` |
-| `transform` | Transformation | For 8 seconds, the target's upcoming pieces become odd shapes: Dot, small L, U, Plus or W (random). The whole next queue changes at once; the falling piece does not. Items inside a piece move to the new shape. When the time runs out, pieces still in the queue or hold change back to what they were. Durations stack like Blackout. | `TransformationItem` |
+| `blind` | Blackout | For 4 seconds (`DurationSeconds` in `config/game.json`), the target cannot see their locked blocks or their ghost piece. Only the falling piece stays visible. Durations stack: each further Blackout adds 4 s to the time that is left. | `InvisibilityItem` |
+| `transform` | Transformation | For 8 seconds (configurable like Blackout), the target's upcoming pieces become odd shapes: Dot, small L, U, Plus or W (random). The whole next queue changes at once; the falling piece does not. Items inside a piece move to the new shape. When the time runs out, pieces still in the queue or hold change back to what they were. Durations stack like Blackout. | `TransformationItem` |
 
 Every item can also be used on yourself: target `1`. *Wipe Out* and *Clear Line* are useful defensively.
 

@@ -2,7 +2,7 @@ namespace ActionBlocks.Game.Items;
 
 /// <summary>
 /// An item that can be found inside pieces and used on a player.
-/// To add a new item: implement this interface and register it in <see cref="ItemRegistry"/>.
+/// To add a new item: implement this interface and add it to <see cref="ItemRegistry.FromSettings"/>.
 /// The frontend needs a matching icon entry for <see cref="Id"/>.
 /// </summary>
 public interface IItem
@@ -13,8 +13,8 @@ public interface IItem
     /// <summary>Name shown when the item is used.</summary>
     string DisplayName { get; }
 
-    /// <summary>Relative chance of this item being picked when an item spawns.</summary>
-    int SpawnWeight => 1;
+    /// <summary>How long the effect lasts, or null for items that act instantly.</summary>
+    double? DurationSeconds => null;
 
     void Apply(ItemContext context);
 }

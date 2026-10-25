@@ -59,8 +59,33 @@ cp .env.example .env
 | `ALLOWED_ORIGINS` | server | empty → any origin | Comma-separated list of origins allowed to connect, e.g. `https://game.example.com` |
 | `PATH_BASE` | server | empty | Prefix to accept if the proxy forwards a sub-path **without stripping it**, e.g. `/server` |
 | `HUB_PATH` | server | `/hub` | Hub endpoint path. It is fixed to `/hub` in the compose file |
-| `ITEM_SPAWN_CHANCE` | server | `0.1` | Chance (0..1) that each block of a new piece carries an item. Passed to the server as `Game__ItemSpawnChance` |
-| `Game__<Setting>` | server | see `GameSettings.cs` | Overrides other gameplay values, e.g. `Game__CountdownSeconds=5`. Add these under the server's `environment:` in the compose file |
+| `GAME_CONFIG` | server | `/app/config/game.json` (compose) | Path of the gameplay config file, see [below](#game-config) |
+| `Game__<Setting>` | server | see `GameSettings.cs` | Overrides a value from the config file, e.g. `Game__CountdownSeconds=5` or `Game__Items__blind__DurationSeconds=6`. Add these under the server's `environment:` in the compose file |
+
+### Game config
+
+`config/game.json` (next to `docker-compose.yml`) holds the gameplay tuning. The compose file mounts the `config` folder read-only into the server container.
+
+```jsonc
+{
+  "Game": {
+    "ItemSpawnChance": 0.1,            // chance (0..1) per block of a new piece to carry an item
+    "Items": {
+      "nuke":  { "Weight": 1 },        // share = weight / sum of all weights; 0 = disabled
+      "blind": { "Weight": 2, "DurationSeconds": 4 },
+      ...
+    }
+  }
+}
+```
+
+- **Effective chance** of an item per block = `ItemSpawnChance × weight / sum of weights`. With the defaults (all weights 1), each of the six items gets 1/6 of the 10%.
+- `DurationSeconds` exists only for the timed items `blind` and `transform`. The other items act instantly.
+- Items left out of the file keep weight 1 and their built-in duration. Item ids are case-insensitive. Any other `GameSettings` value (e.g. `CountdownSeconds`) may be added to `"Game"` too.
+- **Changes apply from the next match on**, without a restart. Running matches keep the values they started with. The server logs `Game config reloaded` with the new shares.
+- **Invalid values** (chance outside 0..1, negative weight, duration ≤ 0, unknown item, duration on an instant item, broken JSON) are reported in the server log:
+  - at startup, the server refuses to start;
+  - on a later edit, the change is ignored and the last good config stays active.
 
 Start or update:
 

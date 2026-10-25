@@ -127,6 +127,20 @@
   image-rendering: pixelated;
 }
 
+.itemText {
+  flex: 1;
+}
+
+.itemName {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.itemShare {
+  color: var(--color-muted);
+}
+
 .itemDescription {
   color: var(--color-muted);
   font-size: 8px;

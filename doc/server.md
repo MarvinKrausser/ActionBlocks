@@ -108,20 +108,22 @@ public interface IItem
 {
     string Id { get; }            // stable id shared with the frontend ("add_line", ...)
     string DisplayName { get; }   // shown in the flash
-    int SpawnWeight => 1;         // relative spawn probability
+    double? DurationSeconds => null; // effect length of timed items, null = instant
     void Apply(ItemContext context);
 }
 public sealed record ItemContext(PlayerGame User, PlayerGame Target, Random Random, double Now);
 ```
 
-- `ItemRegistry.Default` lists all active items. `ItemRegistry.PickRandom` chooses an item weighted by `SpawnWeight`.
+- `ItemRegistry.FromSettings(settings)` builds the items with the weights and durations from `GameSettings.Items` (from `config/game.json`). `ItemRegistry.Default` is the same with built-in values. `PickRandom` chooses an item by weight; weight-0 items never spawn. `Share(id)` is weight / sum of weights.
 - `ItemSpawner.Decorate(type)` turns a raw piece type into a `PieceSpec`. Each mino rolls `ItemSpawnChance` on its own, so a piece can carry 0–4 items.
 
 See [Extending → Add an item](extending.md#add-a-new-item).
 
 ### `GameSettings`
 
-`GameSettings` is an immutable record with `init` properties, one per tunable number. See [Game rules](game-rules.md) for what each one does. The host binds it from the configuration section `Game`, so you can override any property with an environment variable named `Game__<PropertyName>`, e.g. `Game__ItemSpawnChance=0.25`.
+`GameSettings` is an immutable record with `init` properties, one per tunable number, plus `Items` (per-item `Weight` and `DurationSeconds`). See [Game rules](game-rules.md) for what each one does. `Validate()` lists invalid values.
+
+The host binds it from the configuration section `Game`. Its main source is `config/game.json` (`Config/GameConfigFile.cs`, path from `GAME_CONFIG`, otherwise searched upwards from the content root). Environment variables named `Game__<PropertyName>` override the file, e.g. `Game__ItemSpawnChance=0.25`. `Config/GameConfigProvider.cs` validates the config and follows changes to the file. A valid edit replaces `Current`, which the next `StartGame` hands to the new match. An invalid one is logged and ignored. At startup, an invalid config stops the server.
 
 ---
 

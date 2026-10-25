@@ -39,25 +39,29 @@ public sealed class SwapBoardItem : IItem
     }
 }
 
-public sealed class InvisibilityItem : IItem
+public sealed class InvisibilityItem(double durationSeconds = InvisibilityItem.DefaultDurationSeconds) : IItem
 {
-    public const double DurationSeconds = 4;
+    public const string ItemId = "blind";
+    public const double DefaultDurationSeconds = 4;
 
-    public string Id => "blind";
+    public string Id => ItemId;
     public string DisplayName => "Blackout";
+    public double? DurationSeconds => durationSeconds;
 
     // Stacks: a second Blackout adds its full duration to whatever is left.
     public void Apply(ItemContext context) =>
-        context.Target.InvisibleUntil = Math.Max(context.Target.InvisibleUntil, context.Now) + DurationSeconds;
+        context.Target.InvisibleUntil = Math.Max(context.Target.InvisibleUntil, context.Now) + durationSeconds;
 }
 
-public sealed class TransformationItem : IItem
+public sealed class TransformationItem(double durationSeconds = TransformationItem.DefaultDurationSeconds) : IItem
 {
-    public const double DurationSeconds = 8;
+    public const string ItemId = "transform";
+    public const double DefaultDurationSeconds = 8;
 
-    public string Id => "transform";
+    public string Id => ItemId;
     public string DisplayName => "Transformation";
+    public double? DurationSeconds => durationSeconds;
 
     // Stacks like Blackout.
-    public void Apply(ItemContext context) => context.Target.Transform(context.Now, DurationSeconds);
+    public void Apply(ItemContext context) => context.Target.Transform(context.Now, durationSeconds);
 }

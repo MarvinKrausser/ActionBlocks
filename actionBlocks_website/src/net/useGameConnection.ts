@@ -79,12 +79,13 @@ export function useGameConnection() {
   }, []);
 
   const startGame = useCallback(() => clientRef.current!.startGame(), []);
+  const getItems = useCallback(() => clientRef.current!.getItems(), []);
   const sendInput = useCallback((action: InputAction) => clientRef.current?.input(action), []);
   const selectTarget = useCallback((targetId: string) => clientRef.current?.selectTarget(targetId), []);
 
   const actions = useMemo(
-    () => ({ createLobby, joinLobby, leaveLobby, startGame, sendInput, selectTarget }),
-    [createLobby, joinLobby, leaveLobby, startGame, sendInput, selectTarget],
+    () => ({ createLobby, joinLobby, leaveLobby, startGame, getItems, sendInput, selectTarget }),
+    [createLobby, joinLobby, leaveLobby, startGame, getItems, sendInput, selectTarget],
   );
 
   return { status, playerId, lobby, match, flashes, actions };

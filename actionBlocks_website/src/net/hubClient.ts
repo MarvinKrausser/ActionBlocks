@@ -1,6 +1,6 @@
 import * as signalR from '@microsoft/signalr';
 import { getServerUrl } from '../config/runtimeConfig';
-import type { InputAction, JoinResult, Lobby, MatchState } from './types';
+import type { InputAction, ItemInfo, JoinResult, Lobby, MatchState } from './types';
 
 export interface HubHandlers {
   onLobbyUpdated: (lobby: Lobby) => void;
@@ -62,6 +62,11 @@ export class HubClient {
 
   startGame() {
     return this.invoke<void>('StartGame');
+  }
+
+  /** Items with their spawn share and duration from the server config. */
+  getItems() {
+    return this.invoke<ItemInfo[]>('GetItems');
   }
 
   /** Fire-and-forget input; ordering is preserved by the connection. */

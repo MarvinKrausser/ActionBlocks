@@ -20,7 +20,7 @@ Communication uses **ASP.NET Core SignalR** over WebSockets. SignalR falls back 
 | `StartGame` | – | – | Host only; fails while a match is running |
 | `Input` | `action: InputAction` | – | Sent with `send` (fire-and-forget) |
 | `SelectTarget` | `targetId: string` | – | Player id of the item target, or your own id |
-| `GetItems` | – | `ItemInfo[]` | Lists all server items (id + name). Currently unused by the website |
+| `GetItems` | – | `ItemInfo[]` | Items of the current config: `{ id, name, share, durationSeconds }`. `share` is 0..1 (0 = disabled), `durationSeconds` is null for instant items. The lobby help panel uses it |
 
 `InputAction` is one of `MoveLeft`, `MoveRight`, `RotateCw`, `RotateCcw`, `SoftDropStart`, `SoftDropStop`, `HardDrop`, `Hold`, `UseItem`.
 

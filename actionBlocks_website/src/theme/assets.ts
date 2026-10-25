@@ -16,8 +16,10 @@ export interface ItemVisual {
   name: string;
   /** Accent color used for flashes and as icon fallback. */
   color: string;
-  /** Short explanation for the lobby help panel. */
+  /** Short explanation for the lobby help panel. "{duration}" is replaced with the configured seconds. */
   description: string;
+  /** Built-in duration of timed items, shown when the server config can't be read. */
+  defaultDurationSeconds?: number;
 }
 
 /** Keyed by the server item id (IItem.Id). Add an entry here when adding an item on the server. */
@@ -50,13 +52,15 @@ export const itemVisuals: Record<string, ItemVisual> = {
     icon: asset('assets/items/blind.svg'),
     name: 'Blackout',
     color: '#c452ff',
-    description: 'Hides placed blocks and the drop shadow for 4 seconds. Stacks.',
+    description: 'Hides placed blocks and the drop shadow for {duration} seconds. Stacks.',
+    defaultDurationSeconds: 4,
   },
   transform: {
     icon: asset('assets/items/transform.svg'),
     name: 'Transformation',
     color: '#ff6fd8',
-    description: "Turns the target's next pieces into odd shapes for 8 seconds. Stacks.",
+    description: "Turns the target's next pieces into odd shapes for {duration} seconds. Stacks.",
+    defaultDurationSeconds: 8,
   },
 };
 
@@ -93,6 +97,12 @@ export const musicTracks: MusicTrack[] = [
 
 export function itemVisual(id: string): ItemVisual {
   return itemVisuals[id] ?? unknownItem;
+}
+
+/** The lobby description of an item, with its duration filled in. */
+export function itemDescription(visual: ItemVisual, durationSeconds?: number | null): string {
+  const seconds = durationSeconds ?? visual.defaultDurationSeconds;
+  return seconds === undefined ? visual.description : visual.description.replace('{duration}', String(seconds));
 }
 
 const imageCache = new Map<string, HTMLImageElement>();

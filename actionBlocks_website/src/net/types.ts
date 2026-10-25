@@ -23,6 +23,16 @@ export interface Lobby {
   lastResults: MatchResult[] | null;
 }
 
+/** An item of the server's current config (config/game.json). */
+export interface ItemInfo {
+  id: string;
+  name: string;
+  /** Fraction (0..1) of spawned items that are this item; 0 = disabled. */
+  share: number;
+  /** Effect length for timed items, null for instant ones. */
+  durationSeconds: number | null;
+}
+
 export interface JoinResult {
   playerId: string;
   lobby: Lobby;

@@ -1,4 +1,5 @@
 using ActionBlocks.Game;
+using ActionBlocks.Game.Items;
 using ActionBlocks.Server.Dtos;
 
 namespace ActionBlocks.Server.Lobbies;
@@ -48,9 +49,9 @@ public sealed class Lobby(string code)
         }
     }
 
-    public void StartMatch(GameSettings settings)
+    public void StartMatch(GameSettings settings, ItemRegistry items)
     {
-        Match = new Match(_players.Select(p => new MatchPlayer(p.Id, p.Name)), settings);
+        Match = new Match(_players.Select(p => new MatchPlayer(p.Id, p.Name)), settings, items);
         MatchFinishedAt = null;
         Dirty = true;
     }

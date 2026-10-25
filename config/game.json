@@ -1,0 +1,23 @@
+// Gameplay tuning for the Action Blocks server.
+// Changes are picked up automatically and used from the next match on (running matches keep their values).
+// An invalid edit is logged by the server and ignored; an invalid file at startup stops the server.
+// Any value can also be overridden with an env var, e.g. Game__Items__blind__DurationSeconds=6.
+// Other rules (CountdownSeconds, LockDelaySeconds, ...) can be added to "Game" too, see GameSettings.cs.
+{
+  "Game": {
+    // Chance (0..1) that each block of a new piece carries an item. Every block rolls on its own,
+    // so one piece can carry several items. 0 = no items, 1 = every block has one.
+    "ItemSpawnChance": 0.05,
+
+    // Which item a block gets: Weight / sum of all weights. Example: weights 2, 1, 1 = 50%, 25%, 25%.
+    // Weight 0 disables an item. DurationSeconds only exists for the timed items (blind, transform).
+    "Items": {
+      "add_line":   { "Weight": 1 },
+      "clear_line": { "Weight": 1 },
+      "nuke":       { "Weight": 1 },
+      "swap":       { "Weight": 1 },
+      "blind":      { "Weight": 1, "DurationSeconds": 4 },
+      "transform":  { "Weight": 1, "DurationSeconds": 8 }
+    }
+  }
+}

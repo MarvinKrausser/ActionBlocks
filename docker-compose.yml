@@ -30,7 +30,13 @@ services:
       ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-}
       HUB_PATH: /hub
       PATH_BASE: ${PATH_BASE:-}
-      Game__ItemSpawnChance: ${ITEM_SPAWN_CHANCE:-0.1}
+      # Gameplay tuning (item chance, weights, durations). Edits apply from the next match on.
+      GAME_CONFIG: /app/config/game.json
+      # File change events don't always cross bind mounts; polling makes the reload reliable.
+      DOTNET_USE_POLLING_FILE_WATCHER: "true"
+    volumes:
+      # The folder, not the single file: editors that save by replacing the file would break a file mount.
+      - ./config:/app/config:ro
     networks:
       - actionBlocks_server
 

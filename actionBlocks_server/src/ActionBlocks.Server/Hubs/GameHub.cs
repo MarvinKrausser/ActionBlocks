@@ -1,4 +1,5 @@
 using ActionBlocks.Game;
+using ActionBlocks.Server.Config;
 using ActionBlocks.Server.Dtos;
 using ActionBlocks.Server.Lobbies;
 using Microsoft.AspNetCore.SignalR;
@@ -8,7 +9,7 @@ namespace ActionBlocks.Server.Hubs;
 /// <summary>
 /// Client-facing API. Server-to-client messages: "LobbyUpdated" (LobbyDto) and "MatchState" (MatchStateDto).
 /// </summary>
-public sealed class GameHub(LobbyManager lobbies, GameSettings settings) : Hub
+public sealed class GameHub(LobbyManager lobbies, GameConfigProvider config) : Hub
 {
     public const string LobbyUpdated = "LobbyUpdated";
     public const string MatchState = "MatchState";
@@ -51,7 +52,7 @@ public sealed class GameHub(LobbyManager lobbies, GameSettings settings) : Hub
             {
                 throw new HubException("A game is already running.");
             }
-            lobby.StartMatch(settings);
+            lobby.StartMatch(config.Current.Settings, config.Current.Items);
             dto = lobby.ToDto();
         }
         await Clients.Group(lobby.Code).SendAsync(LobbyUpdated, dto);
@@ -67,8 +68,12 @@ public sealed class GameHub(LobbyManager lobbies, GameSettings settings) : Hub
     public void SelectTarget(string targetId) =>
         WithPlayer((lobby, player) => lobby.Match?.SelectTarget(player.Id, targetId));
 
-    public IReadOnlyList<ItemInfoDto> GetItems() =>
-        Game.Items.ItemRegistry.Default.All.Select(i => new ItemInfoDto(i.Id, i.DisplayName)).ToList();
+    /// <summary>Items of the current config with their spawn share and duration (used by the lobby help panel).</summary>
+    public IReadOnlyList<ItemInfoDto> GetItems()
+    {
+        var items = config.Current.Items;
+        return items.All.Select(i => new ItemInfoDto(i.Id, i.DisplayName, items.Share(i.Id), i.DurationSeconds)).ToList();
+    }
 
     public override async Task OnDisconnectedAsync(Exception? exception)
     {
